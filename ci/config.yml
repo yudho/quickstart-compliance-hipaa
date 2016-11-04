@@ -1,7 +1,7 @@
 global:
   marketplace-ami: false
   owner: quickstart-eng@amazon.com
-  qsname: quickstart-enterprise-accelerator-hipaa
+  qsname: quickstart-enterprise-accelerator-nist
   regions:
     - ap-northeast-1
     - ap-northeast-2
@@ -12,14 +12,11 @@ global:
     - eu-west-1
     - sa-east-1
     - us-east-1
+    - us-east-2
     - us-west-1
     - us-west-2
   reporting: true
- 
 tests:
-  quickstart-enterprise-accelerator-hipaat1:
-    parameter_input: quickstart-enterprise-accelerator-hipaa-example-params1.json
-    template_file: quickstart-enterprise-accelerator-hipaa-example1.template
-  quickstart-enterprise-accelerator-hipaat2:
-    parameter_input: quickstart-enterprise-accelerator-hipaa-example-params2.json
-    template_file: quickstart-enterprise-accelerator-hipaa-example2.template
+  defaults:
+    parameter_input: defaults.json
+    template_file: main.template
