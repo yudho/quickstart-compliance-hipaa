@@ -140,9 +140,9 @@
       Type: "String"
       Default: "true"
     QSS3BucketName:
-      AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
+      AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-.]*[0-9a-zA-Z])*$"
       ConstraintDescription: Quick Start bucket name can include numbers, lowercase
-        letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+        letters, uppercase letters, periods (.), and hyphens (-). It cannot start or end with a hyphen
         (-).
       Default: quickstart-reference
       Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
@@ -558,7 +558,7 @@
         HealthCheck:
           HealthyThreshold: "2"
           Interval: "15"
-          Target: "TCP:80"
+          Target: "TCP:443"
           Timeout: "5"
           UnhealthyThreshold: "3"
         AccessLoggingPolicy:
@@ -574,8 +574,13 @@
           -
             InstancePort: "80"
             LoadBalancerPort: "80"
-            Protocol: "HTTP"
-            InstanceProtocol: "HTTP"
+            Protocol: "TCP"
+            InstanceProtocol: "TCP"
+          -
+            InstancePort: "443"
+            LoadBalancerPort: "443"
+            Protocol: "TCP"
+            InstanceProtocol: "TCP"
         Scheme: "internal"
         Tags:
           -
@@ -600,7 +605,7 @@
         HealthCheck:
           HealthyThreshold: "2"
           Interval: "30"
-          Target: "TCP:80"
+          Target: "TCP:443"
           Timeout: "5"
           UnhealthyThreshold: "5"
         AccessLoggingPolicy:
@@ -616,8 +621,13 @@
           -
             InstancePort: "80"
             LoadBalancerPort: "80"
-            Protocol: "HTTP"
-            InstanceProtocol: "HTTP"
+            Protocol: "TCP"
+            InstanceProtocol: "TCP"
+          -
+            InstancePort: "443"
+            LoadBalancerPort: "443"
+            Protocol: "TCP"
+            InstanceProtocol: "TCP"
         Tags:
           -
             Key: "Name"
@@ -626,11 +636,170 @@
             Key: "Environment"
             Value:
               Ref: "pEnvironment"
+
+    rS3AssetsBucket:
+      Type: "AWS::S3::Bucket"
+      DeletionPolicy: "Delete"
+      Properties:
+        AccessControl: "Private"
+
+    rPreProcInstanceRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: "Allow"
+              Principal:
+                Service:
+                  - "ec2.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Path: "/"
+        Policies:
+          -
+            PolicyName: "PreProcPermissions"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                -
+                  Sid: "UploadServerCertificate"
+                  Effect: "Allow"
+                  Action:
+                    - "s3:PutObject"
+                  Resource:
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - Ref: rS3AssetsBucket
+                        - /*
+                -
+                  Sid: "SelfDestruct"
+                  Effect: "Allow"
+                  Action:
+                    - "ec2:TerminateInstances"
+                  Resource:
+                    - "*"
+    rPreProcInstanceProfile:
+      Type: "AWS::IAM::InstanceProfile"
+      Properties:
+        Path: "/"
+        Roles:
+          -
+            Ref: "rPreProcInstanceRole"
+    rPreProcInstance:
+      Type: "AWS::EC2::Instance"
+      Properties:
+        KeyName:
+          Ref: "pEC2KeyPair"
+        ImageId:
+          Ref: "pWebServerAMI"
+        InstanceType:
+          Ref: "pAppInstanceType"
+        IamInstanceProfile:
+          Ref: "rPreProcInstanceProfile"
+        SubnetId:
+          Ref: "pAppPrivateSubnetA"
+        SecurityGroupIds:
+          -
+            Ref: "rSecurityGroupAppInstance"
+        UserData:
+          Fn::Base64:
+            Fn::Join:
+              - ""
+              -
+                - "#!/bin/bash -xe\n"
+                - "echo Configure the region, necessary especially for GovCloud\n"
+                - "aws configure set region "
+                -
+                  Ref: "AWS::Region"
+                - "\n"
+                - "echo Generating private certificate...\n"
+                - "sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /tmp/common.key -out /tmp/common.crt -subj \"/C=US/ST=Washington/L=Seattle/O=NonProductionTestCert/CN=NonProductionTestCert\"\n"
+                - "echo Uploading key to assets bucket...\n"
+                - "aws s3api put-object --bucket "
+                -
+                  Ref: "rS3AssetsBucket"
+                - " --key ssl/common.key --body /tmp/common.key\n"
+                - "echo Uploading cert to assets bucket...\n"
+                - "aws s3api put-object --bucket "
+                -
+                  Ref: "rS3AssetsBucket"
+                - " --key ssl/common.crt --body /tmp/common.crt\n"
+                - "/opt/aws/bin/cfn-signal -e $? "
+                - "         --stack "
+                -
+                  Ref: "AWS::StackName"
+                - "         --resource rPreProcInstance "
+                - "         --region "
+                -
+                  Ref: "AWS::Region"
+                - "\n"
+                - "echo Self-destruct!\n"
+                - "aws ec2 terminate-instances --instance-id $(curl -s http://169.254.169.254/latest/meta-data/instance-id) --region "
+                -
+                  Ref: "AWS::Region"
+                - "\n"
+        Tags:
+          -
+            Key: "Name"
+            Value: "PreProcessor"
+      CreationPolicy:
+        ResourceSignal:
+          Timeout: PT10M
+
+    rWebInstanceRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: "Allow"
+              Principal:
+                Service:
+                  - "ec2.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Path: "/"
+        Policies:
+          -
+            PolicyName: "S3Assets"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                -
+                  Sid: "GetServerCertificate"
+                  Effect: "Allow"
+                  Action:
+                    - "s3:Get*"
+                    - "s3:List*"
+                    - "s3:Head*"
+                  Resource:
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - Ref: rS3AssetsBucket
+                        - /*
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - Ref: rS3AssetsBucket
+    rWebInstanceProfile:
+      Type: "AWS::IAM::InstanceProfile"
+      Properties:
+        Path: "/"
+        Roles:
+          -
+            Ref: "rWebInstanceRole"
+
     rAutoScalingConfigWeb:
       Type: "AWS::AutoScaling::LaunchConfiguration"
       DependsOn:
         - "rELBApp"
         - "rAutoScalingGroupApp"
+        - "rPreProcInstance"
       Metadata:
         AWS::CloudFormation::Init:
           config:
@@ -640,6 +809,13 @@
                 java-1.6.0-openjdk-devel: []
                 git: []
             files:
+              /etc/nginx/snippets/self-signed.conf:
+                content:
+                  Fn::Join:
+                    - ""
+                    -
+                      - "ssl_certificate /etc/ssl/certs/common.crt;"
+                      - "ssl_certificate_key /etc/ssl/private/common.key;"
               /tmp/nginx/default.conf:
                 content:
                   Fn::Join:
@@ -661,6 +837,24 @@
                       - "    proxy_redirect off;\n\n"
                       - "    proxy_pass $elb;\n\n"
                       - "  }\n"
+                      - "}\n"
+                      - "server {\n"
+                      - "  listen 443 ssl http2 default_server;\n"
+                      - "  listen [::]:443 ssl http2 default_server;\n"
+                      - "  location / {\n"
+                      - "    resolver xxxxx;\n"
+                      - "    set $elb 'https://"
+                      -
+                        Fn::GetAtt:
+                          - "rELBApp"
+                          - "DNSName"
+                      - "';\n"
+                      - "    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
+                      - "    proxy_set_header Host $http_host;\n"
+                      - "    proxy_redirect off;\n\n"
+                      - "    proxy_pass $elb;\n\n"
+                      - "  }\n"
+                      - "  include snippets/self-signed.conf;\n"
                       - "}\n"
                 mode: "000755"
                 owner: "root"
@@ -692,6 +886,8 @@
         AssociatePublicIpAddress: "True"
         ImageId:
           Ref: "pWebServerAMI"
+        IamInstanceProfile:
+          Ref: "rWebInstanceProfile"
         InstanceType:
           Ref: "pWebInstanceType"
         KeyName:
@@ -706,6 +902,14 @@
               -
                 - "#!/bin/bash\n"
                 - "yum update -y\n"
+                - "aws s3 cp s3://"
+                -
+                  Ref: rS3AssetsBucket
+                - "/ssl/common.crt /etc/ssl/certs/common.crt\n"
+                - "aws s3 cp s3://"
+                -
+                  Ref: rS3AssetsBucket
+                - "/ssl/common.key /etc/ssl/private/common.key\n"
                 - "/opt/aws/bin/cfn-init -v "
                 - "         --stack "
                 -
@@ -810,9 +1014,57 @@
               Ref: "rAutoScalingGroupWeb"
         ComparisonOperator: "LessThanThreshold"
         MetricName: "WebServerCpuLowUtilization"
+
+    rAppInstanceRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            -
+              Effect: "Allow"
+              Principal:
+                Service:
+                  - "ec2.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
+        Path: "/"
+        Policies:
+          -
+            PolicyName: "S3Assets"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                -
+                  Sid: "GetServerCertificate"
+                  Effect: "Allow"
+                  Action:
+                    - "s3:Get*"
+                    - "s3:List*"
+                    - "s3:Head*"
+                  Resource:
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - Ref: rS3AssetsBucket
+                        - /*
+                    - Fn::Join:
+                      - ''
+                      - - 'arn:aws:s3:::'
+                        - Ref: rS3AssetsBucket
+    rAppInstanceProfile:
+      Type: "AWS::IAM::InstanceProfile"
+      Properties:
+        Path: "/"
+        Roles:
+          -
+            Ref: "rAppInstanceRole"
+
     rAutoScalingConfigApp:
       Type: "AWS::AutoScaling::LaunchConfiguration"
-      DependsOn: "rRDSInstanceMySQL"
+      DependsOn:
+        - "rRDSInstanceMySQL"
+        - "rPreProcInstance"
       Metadata:
         AWS::CloudFormation::Init:
           configSets:
@@ -891,6 +1143,22 @@
             sources:
               /var/www/html: "https://wordpress.org/latest.tar.gz"
             files:
+              /tmp/httpd/ssl.conf:
+                content:
+                  Fn::Join:
+                    - ""
+                    -
+                      - "Listen 443\n"
+                      - "<VirtualHost *:443>\n"
+                      - "DocumentRoot /var/www/html\n"
+                      - "LoadModule ssl_module /etc/httpd/modules/mod_ssl.so\n"
+                      - "SSLEngine on\n"
+                      - "SSLCertificateFile /etc/ssl/certs/common.crt\n"
+                      - "SSLCertificateKeyFile /etc/ssl/private/common.key\n"
+                      - "</VirtualHost>\n"
+                mode: "000755"
+                owner: "root"
+                group: "root"
               /tmp/create-wp-config:
                 content:
                   Fn::Join:
@@ -933,6 +1201,8 @@
       Properties:
         ImageId:
           Ref: "pAppAmi"
+        IamInstanceProfile:
+          Ref: "rAppInstanceProfile"
         InstanceType:
           Ref: "pAppInstanceType"
         KeyName:
@@ -947,6 +1217,15 @@
               -
                 - "#!/bin/bash -xe\n"
                 - "yum update -y\n"
+                - "yum -y install mod_ssl\n"
+                - "aws s3 cp s3://"
+                -
+                  Ref: rS3AssetsBucket
+                - "/ssl/common.crt /etc/ssl/certs/common.crt\n"
+                - "aws s3 cp s3://"
+                -
+                  Ref: rS3AssetsBucket
+                - "/ssl/common.key /etc/ssl/private/common.key\n"
                 - "/opt/aws/bin/cfn-init -v "
                 - "         --stack "
                 -
@@ -957,6 +1236,8 @@
                 -
                   Ref: "AWS::Region"
                 - "\n"
+                - "cp /tmp/httpd/ssl.conf /etc/httpd/conf.d/ssl.conf\n"
+                - "service httpd restart\n"
                 - "/opt/aws/bin/cfn-signal -e $? "
                 - "         --stack "
                 -
@@ -1053,6 +1334,7 @@
               Ref: "rAutoScalingGroupApp"
         ComparisonOperator: "LessThanThreshold"
         MetricName: "AppServerCpuLowUtilization"
+
     rPostProcInstanceRole:
       Type: "AWS::IAM::Role"
       Properties:
@@ -1138,41 +1420,6 @@
                 -
                   Ref: "AWS::Region"
                 - "\n"
-                - "echo Determine whether a certificate needs to be generated\n"
-                - "cert_arn=$(aws iam list-server-certificates --query 'ServerCertificateMetadataList[?ServerCertificateName==`non-production-testing-server-cert`].Arn' --output text)\n"
-                - "if [[ $(echo \"$cert_arn\" | grep \"non-production-testing-server-cert\") != *\"non-production-testing-server-cert\"* ]]; then\n"
-                - "echo *** Beginnning ELB HTTPS configuration ***\n"
-                - "echo Generating private key...\n"
-                - "sudo openssl genrsa -out /tmp/my-private-key.pem 2048\n"
-                - "echo Creating CSR\n"
-                - "sudo openssl req -sha256 -new -key /tmp/my-private-key.pem -out /tmp/csr.pem -subj \"/C=US/ST=Washington/L=Seattle/O=NonProductionTestCert/CN=NonProductionTestCert\"\n"
-                - "echo Self-signing certificate...\n"
-                - "sudo openssl x509 -req -days 365 -in /tmp/csr.pem -signkey /tmp/my-private-key.pem -out /tmp/my-certificate.pem\n"
-                - "sudo openssl rsa -in /tmp/my-private-key.pem -outform PEM\n"
-                - "echo Converting private key...\n"
-                - "sudo openssl x509 -inform PEM -in /tmp/my-certificate.pem\n"
-                - "echo Uploading key to AWS IAM and saving ARN to environment variable...\n"
-                - "cert_arn=$(aws iam upload-server-certificate --server-certificate-name non-production-testing-server-cert --query 'ServerCertificateMetadata.Arn' --output text --certificate-body file:///tmp/my-certificate.pem --private-key file:///tmp/my-private-key.pem)\n"
-                - "echo Sleeping so IAM can propogate the certificate...\n"
-                - "sleep 10\n"
-                - "echo Removing key files...\n"
-                - "sudo rm /tmp/*.pem\n"
-                - "fi\n"
-                - "echo Creating ELB HTTPS listener using the cert stored in the environment variable...\n"
-                - "aws elb create-load-balancer-listeners --load-balancer-name "
-                -
-                  Ref: "rELBWeb"
-                - " --listeners \"Protocol=HTTPS,LoadBalancerPort=443,InstanceProtocol=HTTP,InstancePort=80,SSLCertificateId=$cert_arn\" --region "
-                -
-                  Ref: "AWS::Region"
-                - "\n"
-                - "aws elb create-load-balancer-listeners --load-balancer-name "
-                -
-                  Ref: "rELBApp"
-                - " --listeners \"Protocol=HTTPS,LoadBalancerPort=443,InstanceProtocol=HTTP,InstancePort=80,SSLCertificateId=$cert_arn\" --region "
-                -
-                  Ref: "AWS::Region"
-                - "\n"
                 - "echo Send notification message...\n"
                 - "aws sns publish"
                 - " --topic-arn "
@@ -1204,7 +1451,6 @@
                 -
                   Ref: "AWS::Region"
                 - "\n"
-                - "echo *** ELB HTTPS configuration complete ***\n"
         Tags:
           -
             Key: "Name"
