@@ -1103,7 +1103,7 @@
                       - "         --stack "
                       -
                         Ref: "AWS::StackName"
-                      - "         --resource rAutoScalingConfigApp "
+                      - "         --resource rAutoScalingGroupApp "
                       - "         --configsets wordpress_install "
                       - "         --region "
                       -
@@ -1280,6 +1280,10 @@
             Value:
               Ref: "pEnvironment"
             PropagateAtLaunch: "true"
+      CreationPolicy:
+        ResourceSignal:
+          Count: 1
+          Timeout: PT15M
     rAutoScalingDownApp:
       Type: "AWS::AutoScaling::ScalingPolicy"
       Properties:
