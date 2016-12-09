@@ -217,7 +217,7 @@
         InstanceType: "m4.large"
         InstanceTypeDatabase: "db.m4.large"
       us-east-2:
-        AMI: "ami-c481fad3"
+        AMI: "ami-71ca9114"
         InstanceType: "m4.large"
         InstanceTypeDatabase: "db.m4.large"
       us-west-1:
