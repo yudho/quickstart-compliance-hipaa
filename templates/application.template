@@ -639,7 +639,7 @@
 
     rS3AssetsBucket:
       Type: "AWS::S3::Bucket"
-      DeletionPolicy: "Delete"
+      DeletionPolicy: "Retain"
       Properties:
         AccessControl: "Private"
 
