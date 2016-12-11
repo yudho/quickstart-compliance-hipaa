@@ -7,4 +7,4 @@ The Quick Start will deploy a standard three-tier web architecture using multipl
 
 ![Architecture](https://docs.aws.amazon.com/quickstart/latest/accelerator-nist/images/nist-on-aws-architecture.png)
 
-You can find more information on the "Standardized Architecture for NIST-based Assurance Frameworks on the AWS Cloud: Quick Start Reference Deployment" [web page](https://docs.aws.amazon.com/quickstart/latest/accelerator-nist/welcome.html).
+You can find more information on the HIPAA Frameworks on the AWS Cloud: Quick Start Reference Deployment" [web page](https://docs.aws.amazon.com/quickstart/latest/accelerator-nist/welcome.html).
