@@ -639,7 +639,7 @@
 
     rS3AssetsBucket:
       Type: "AWS::S3::Bucket"
-      DeletionPolicy: "Delete"
+      DeletionPolicy: "Retain"
       Properties:
         AccessControl: "Private"
 
@@ -710,6 +710,7 @@
               - ""
               -
                 - "#!/bin/bash -xe\n"
+                - "aws configure set default.s3.signature_version s3v4\n"
                 - "echo Configure the region, necessary especially for GovCloud\n"
                 - "aws configure set region "
                 -
@@ -902,6 +903,7 @@
               -
                 - "#!/bin/bash\n"
                 - "yum update -y\n"
+                - "aws configure set default.s3.signature_version s3v4\n"
                 - "aws s3 cp s3://"
                 -
                   Ref: rS3AssetsBucket
@@ -1218,6 +1220,7 @@
                 - "#!/bin/bash -xe\n"
                 - "yum update -y\n"
                 - "yum -y install mod_ssl\n"
+                - "aws configure set default.s3.signature_version s3v4\n"
                 - "aws s3 cp s3://"
                 -
                   Ref: rS3AssetsBucket
