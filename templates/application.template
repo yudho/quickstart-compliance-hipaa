@@ -651,7 +651,7 @@ Resources:
                   }
                   include snippets/self-signed.conf;
                 }
-              mode: 000755
+              mode: '000755'
               owner: root
               group: root
           commands:
@@ -823,7 +823,7 @@ Resources:
                 [main]
                 stack=${AWS::StackId}
                 region=${AWS::Region}
-              mode: 000400
+              mode: '000400'
               owner: root
               group: root
             /etc/cfn/hooks.d/cfn-auto-reloader.conf:
@@ -832,7 +832,7 @@ Resources:
                 triggers=post.update
                 path=Resources.rAutoScalingConfigApp.Metadata.AWS::CloudFormation::Init
                 action=/opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource rAutoScalingGroupApp --configsets wordpress_install --region ${AWS::Region}
-              mode: 000400
+              mode: '000400'
               owner: root
               group: root
           services:
@@ -869,7 +869,7 @@ Resources:
                 SSLCertificateFile /etc/ssl/certs/common.crt
                 SSLCertificateKeyFile /etc/ssl/private/common.key
                 </VirtualHost>
-              mode: 000755
+              mode: '000755'
               owner: root
               group: root
             /tmp/create-wp-config:
@@ -882,7 +882,7 @@ Resources:
                 sed -i "s/'localhost'/'${rRDSInstanceMySQL.Endpoint.Address}'/g\" wp-config.php
                 sed -i "/DB_HOST/a define('FORCE_SSL_ADMIN', true);" wp-config.php"
                 sed -i "/FORCE_SSL_ADMIN/a if (strpos(\$_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) { \$_SERVER['HTTPS']='on'; }" wp-config.php"
-              mode: 000500
+              mode: '000500'
               owner: apache
               group: apache
           commands:
