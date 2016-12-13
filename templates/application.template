@@ -542,16 +542,8 @@ Resources:
         'Fn::Sub': |
           #!/bin/bash -xe
 
-<<<<<<< HEAD
           echo Force S3 to use Sigv4
           aws configure set default.s3.signature_version s3v4
-=======
-    rS3AssetsBucket:
-      Type: "AWS::S3::Bucket"
-      DeletionPolicy: "Retain"
-      Properties:
-        AccessControl: "Private"
->>>>>>> 2aa39094b18baa53aae9ddb021692668b12f2574
 
           echo Configure the region, necessary especially for GovCloud
           aws configure set region ${AWS::Region}
