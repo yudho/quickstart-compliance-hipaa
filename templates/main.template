@@ -238,6 +238,14 @@ Mappings:
       AMI: ami-d41d58a7
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
+    eu-west-2:
+      AMI: ami-8f616beb
+      InstanceType: m4.large
+      InstanceTypeDatabase: db.m4.large
+    ca-central-1:
+      AMI: ami-3dd56759
+      InstanceType: m4.large
+      InstanceTypeDatabase: db.m4.large
     eu-central-1:
       AMI: ami-0044b96f
       InstanceType: m4.large
