@@ -120,10 +120,16 @@ Mappings:
     ap-southeast-2:
       Partition: aws
       QuickStartS3URL: https://s3.amazonaws.com
+    ca-central-1:
+      Partition: aws
+      QuickStartS3URL: https://s3.amazonaws.com
     eu-central-1:
       Partition: aws
       QuickStartS3URL: https://s3.amazonaws.com
     eu-west-1:
+      Partition: aws
+      QuickStartS3URL: https://s3.amazonaws.com
+    eu-west-2:
       Partition: aws
       QuickStartS3URL: https://s3.amazonaws.com
     sa-east-1:
@@ -167,12 +173,20 @@ Mappings:
       ConfigRules: true
       NatGateway: true
       Glacier: true
+    ca-central-1:
+      ConfigRules: false
+      NatGateway: true
+      Glacier: true
     eu-central-1:
       NatGateway: true
       ConfigRules: true
       Glacier: true
     eu-west-1:
       ConfigRules: true
+      NatGateway: true
+      Glacier: true
+    eu-west-2:
+      ConfigRules: false
       NatGateway: true
       Glacier: true
     ap-northeast-1:
@@ -220,8 +234,16 @@ Mappings:
       AMI: ami-b04e92d0
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
+    ca-central-1:
+      AMI: ami-b48b39d0
+      InstanceType: m4.large
+      InstanceTypeDatabase: db.m4.large
     eu-west-1:
       AMI: ami-d41d58a7
+      InstanceType: m4.large
+      InstanceTypeDatabase: db.m4.large
+    eu-west-2:
+      AMI: ami-d6cbc1b2
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     eu-central-1:
