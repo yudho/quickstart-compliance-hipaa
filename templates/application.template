@@ -692,7 +692,7 @@ Resources:
           yum update -y
           aws configure set default.s3.signature_version s3v4
           aws s3 cp s3://${rS3AssetsBucket}/ssl/common.crt /etc/ssl/certs/common.crt --region ${AWS::Region}
-          aws s3 cp s3://${rS3AssetsBucket}/ssl/common.key /etc/ssl/certs/common.key --region ${AWS::Region}
+          aws s3 cp s3://${rS3AssetsBucket}/ssl/common.key /etc/ssl/private/common.key --region ${AWS::Region}
           /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource rAutoScalingConfigWeb --region ${AWS::Region}
 
           ## Nginx setup
@@ -914,7 +914,7 @@ Resources:
 
           aws configure set default.s3.signature_version s3v4
           aws s3 cp s3://${rS3AssetsBucket}/ssl/common.crt /etc/ssl/certs/common.crt --region ${AWS::Region}
-          aws s3 cp s3://${rS3AssetsBucket}/ssl/common.key /etc/ssl/certs/common.key --region ${AWS::Region}
+          aws s3 cp s3://${rS3AssetsBucket}/ssl/common.key /etc/ssl/private/common.key --region ${AWS::Region}
 
           /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource rAutoScalingConfigApp --configsets wordpress_install --region ${AWS::Region}
           cp /tmp/httpd/ssl.conf /etc/httpd/conf.d/ssl.conf
