@@ -799,8 +799,10 @@ Resources:
                   - s3:List*
                   - s3:Head*
                 Resource:
-                  - !Sub arn:aws:s3:::${rS3AssetsBucket}/*
                   - !Sub arn:aws:s3:::${rS3AssetsBucket}
+                  - !Sub arn:aws:s3:::${rS3AssetsBucket}/*
+                  - !Sub arn:aws:s3:::${QSS3BucketName}
+                  - !Sub arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}/*
   rAppInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -848,8 +850,6 @@ Resources:
                   - /etc/cfn/cfn-hup.conf
                   - /etc/cfn/hooks.d/cfn-auto-reloader.conf
         copy_landing_content:
-          sources:
-            /var/www/html: !Sub ${QuickStartS3URL}/${QSS3BucketName}/${QSS3KeyPrefix}/assets/landing.zip
           commands:
             01_configure_permissions:
               command: sudo chmod 755 -R /var/www/html
@@ -876,23 +876,28 @@ Resources:
               mode: '000755'
               owner: root
               group: root
-            /tmp/create-wp-config:
+            /var/www/html/wordpress/wp-config.php:
               content: !Sub |
-                #!/bin/bash
-                cp /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
-                sed -i "s/'database_name_here'/'${pDBName}'/g\" wp-config.php
-                sed -i "s/'username_here'/'${pDBUser}'/g\" wp-config.php
-                sed -i "s/'password_here'/'${pDBPassword}'/g\" wp-config.php
-                sed -i "s/'localhost'/'${rRDSInstanceMySQL.Endpoint.Address}'/g\" wp-config.php
-                sed -i "/DB_HOST/a define('FORCE_SSL_ADMIN', true);" wp-config.php"
-                sed -i "/FORCE_SSL_ADMIN/a if (strpos(\$_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) { \$_SERVER['HTTPS']='on'; }" wp-config.php"
-              mode: '000500'
-              owner: apache
-              group: apache
-          commands:
-            01_configure_wordpress:
-              command: /tmp/create-wp-config
-              cwd: /var/www/html/wordpress
+                <?php
+                define('DB_NAME', '${pDBName}');
+                define('DB_USER', '${pDBUser}');
+                define('DB_PASSWORD', '${pDBPassword}');
+                define('DB_HOST', '${rRDSInstanceMySQL.Endpoint.Address}');
+                define('FORCE_SSL_ADMIN', true);
+                if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) { $_SERVER['HTTPS']='on'; }
+                define('DB_CHARSET', 'utf8');
+                define('DB_COLLATE', '');
+
+                $table_prefix  = 'wp_';
+                define('WP_DEBUG', false);
+
+                if ( !defined('ABSPATH') )
+                	define('ABSPATH', dirname(__FILE__) . '/');
+
+                require_once(ABSPATH . 'wp-settings.php');
+              mode: '000644'
+              owner: root
+              group: root
           services:
             sysvinit:
               httpd:
@@ -913,6 +918,9 @@ Resources:
           yum -y install mod_ssl
 
           aws configure set default.s3.signature_version s3v4
+          aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}/assets/landing.zip /var/www/html/ --region ${AWS::Region}
+          unzip -d /var/www/html/ /var/www/html/landing.zip
+
           aws s3 cp s3://${rS3AssetsBucket}/ssl/common.crt /etc/ssl/certs/common.crt --region ${AWS::Region}
           aws s3 cp s3://${rS3AssetsBucket}/ssl/common.key /etc/ssl/private/common.key --region ${AWS::Region}
 
