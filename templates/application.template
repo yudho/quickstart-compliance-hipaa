@@ -1181,6 +1181,9 @@ Resources:
                                              This page resides on an application server in your new environment." \
                       --region ${AWS::Region}
 
+                    echo Sleeping for 2 minutes to allow CloudFormation to catch up
+                    sleep 120
+
                     echo Self-destruct!
                     aws ec2 terminate-instances --instance-id $(curl -s http://169.254.169.254/latest/meta-data/instance-id) --region ${AWS::Region}
 
