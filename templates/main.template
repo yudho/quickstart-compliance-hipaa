@@ -91,7 +91,7 @@ Parameters:
     Description: Availability Zone 2
     Type: AWS::EC2::AvailabilityZone::Name
   pVPCTenancy:
-    Description: 'To meet BAA requirements, dedicated VPC tenancy must be set to dedicated'
+    Description: 'To meet BAA requirements, VPC tenancy MUST be set to dedicated'
     Type: String
     Default: dedicated
     AllowedValues:
