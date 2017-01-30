@@ -29,6 +29,6 @@
     },
     {
         "ParameterKey": "pVPCTenancy",
-        "ParameterValue": "default"
+        "ParameterValue": "dedicated"
     }
 ]

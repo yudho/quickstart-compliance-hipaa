@@ -76,10 +76,7 @@ Parameters:
       logins
     Type: AWS::EC2::KeyPair::KeyName
   pSupportsConfig:
-    Description: 'Is AWS Config Rules already configured for this region? Use ''No''
-      if you are uncertain. AWS Config Rules is available in these regions: US East
-      (Virginia), US West (Oregon), EU West (Ireland), and EU Central (Frankfurt).
-      See AWS Config Management Console or Deployment Guide for details.'
+    Description: 'Is AWS Config Rules already configured for this region? Use 'No' if you are uncertain. The AWS Config rules feature is currently available in the AWS Regions listed on the http://docs.aws.amazon.com/general/latest/gr/rande.html#awsconfig_region page'
     AllowedValues:
     - 'Yes'
     - 'No'
@@ -92,9 +89,9 @@ Parameters:
     Description: Availability Zone 2
     Type: AWS::EC2::AvailabilityZone::Name
   pVPCTenancy:
-    Description: Instance tenancy behavior for this VPC
+    Description: 'To meet BAA requirements, dedicated VPC tenancy must be set to dedicated'
     Type: String
-    Default: default
+    Default: dedicated
     AllowedValues:
     - default
     - dedicated
