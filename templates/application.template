@@ -518,7 +518,9 @@ Resources:
                         Effect: Allow
                         Action:
                           - s3:PutObject
-                        Resource: !Sub arn:aws:s3:::${rS3AssetsBucket}/*
+                        Resource: !Sub
+                          - arn:${Endpoint}:s3:::${rS3AssetsBucket}/*
+                          - { Endpoint: !If [ IsGovCloud, aws-us-gov, aws ] }
                       - Sid: SelfDestruct
                         Effect: Allow
                         Action:
@@ -600,8 +602,12 @@ Resources:
                           - s3:List*
                           - s3:Head*
                         Resource:
-                          - !Sub arn:aws:s3:::${rS3AssetsBucket}/*
-                          - !Sub arn:aws:s3:::${rS3AssetsBucket}
+                          - !Sub
+                              - arn:${Endpoint}:s3:::${rS3AssetsBucket}/*
+                              - { Endpoint: !If [ IsGovCloud, aws-us-gov, aws ] }
+                          - !Sub
+                              - arn:${Endpoint}:s3:::${rS3AssetsBucket}
+                              - { Endpoint: !If [ IsGovCloud, aws-us-gov, aws ] }
                       - Sid: DescribeVolumes
                         Effect: Allow
                         Action:
@@ -840,8 +846,12 @@ Resources:
                           - s3:List*
                           - s3:Head*
                         Resource:
-                          - !Sub arn:aws:s3:::${rS3AssetsBucket}
-                          - !Sub arn:aws:s3:::${rS3AssetsBucket}/*
+                          - !Sub
+                              - arn:${Endpoint}:s3:::${rS3AssetsBucket}/*
+                              - { Endpoint: !If [ IsGovCloud, aws-us-gov, aws ] }
+                          - !Sub
+                              - arn:${Endpoint}:s3:::${rS3AssetsBucket}
+                              - { Endpoint: !If [ IsGovCloud, aws-us-gov, aws ] }
                           - !Sub arn:aws:s3:::${QSS3BucketName}
                           - !Sub arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}/*
                       - Sid: DescribeVolumes
