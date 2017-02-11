@@ -852,8 +852,12 @@ Resources:
                           - !Sub
                               - arn:${Endpoint}:s3:::${rS3AssetsBucket}
                               - { Endpoint: !If [ IsGovCloud, aws-us-gov, aws ] }
-                          - !Sub arn:aws:s3:::${QSS3BucketName}
-                          - !Sub arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}/*
+                          - !Sub
+                              - arn:${Endpoint}:s3:::${QSS3BucketName}
+                              - { Endpoint: !If [ IsGovCloud, aws-us-gov, aws ] }
+                          - !Sub
+                              - arn:${Endpoint}:s3:::${QSS3BucketName}/${QSS3KeyPrefix}/*
+                              - { Endpoint: !If [ IsGovCloud, aws-us-gov, aws ] }
                       - Sid: DescribeVolumes
                         Effect: Allow
                         Action:
