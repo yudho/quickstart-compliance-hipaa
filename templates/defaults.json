@@ -17,7 +17,7 @@
     },
     {
         "ParameterKey": "pSupportsConfig",
-        "ParameterValue": "No"
+        "ParameterValue": "Yes"
     },
     {
         "ParameterKey": "pAvailabilityZoneA",
@@ -29,6 +29,6 @@
     },
     {
         "ParameterKey": "pVPCTenancy",
-        "ParameterValue": "dedicated"
+        "ParameterValue": "default"
     }
 ]
