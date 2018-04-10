@@ -446,7 +446,7 @@ Resources:
             - GovCloudCondition
             - s3-us-gov-west-1
             - s3
-      TimeoutInMinutes: 30
+      TimeoutInMinutes: 45
       Parameters:
         pSecurityAlarmTopic:
           !GetAtt
