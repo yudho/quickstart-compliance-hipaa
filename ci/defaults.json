@@ -17,7 +17,7 @@
     },
     {
         "ParameterKey": "pSupportsConfig",
-        "ParameterValue": "No"
+        "ParameterValue": "false"
     },
     {
         "ParameterKey": "pAvailabilityZoneA",
