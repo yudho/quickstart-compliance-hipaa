@@ -554,10 +554,10 @@ Resources:
             - s3:PutObject
             Resource:
               !Sub
-              - arn:${Endpoint}:s3:::${rS3AssetsBucket}/*
-              - Endpoint:
+              - arn:${Partition}:s3:::${rS3AssetsBucket}/*
+              - Partition:
                   !If
-                  - IsGovCloud
+                  - GovCloudCondition
                   - aws-us-gov
                   - aws
           - Sid: SelfDestruct
@@ -641,17 +641,17 @@ Resources:
             - s3:Head*
             Resource:
             - !Sub
-              - arn:${Endpoint}:s3:::${rS3AssetsBucket}/*
-              - Endpoint:
+              - arn:${Partition}:s3:::${rS3AssetsBucket}/*
+              - Partition:
                   !If
-                  - IsGovCloud
+                  - GovCloudCondition
                   - aws-us-gov
                   - aws
             - !Sub
-              - arn:${Endpoint}:s3:::${rS3AssetsBucket}
-              - Endpoint:
+              - arn:${Partition}:s3:::${rS3AssetsBucket}
+              - Partition:
                   !If
-                  - IsGovCloud
+                  - GovCloudCondition
                   - aws-us-gov
                   - aws
           - Sid: DescribeVolumes
@@ -889,31 +889,31 @@ Resources:
             - s3:Head*
             Resource:
             - !Sub
-              - arn:${Endpoint}:s3:::${rS3AssetsBucket}/*
-              - Endpoint:
+              - arn:${Partition}:s3:::${rS3AssetsBucket}/*
+              - Partition:
                   !If
-                  - IsGovCloud
+                  - GovCloudCondition
                   - aws-us-gov
                   - aws
             - !Sub
-              - arn:${Endpoint}:s3:::${rS3AssetsBucket}
-              - Endpoint:
+              - arn:${Partition}:s3:::${rS3AssetsBucket}
+              - Partition:
                   !If
-                  - IsGovCloud
+                  - GovCloudCondition
                   - aws-us-gov
                   - aws
             - !Sub
-              - arn:${Endpoint}:s3:::${QSS3BucketName}
-              - Endpoint:
+              - arn:${Partition}:s3:::${QSS3BucketName}
+              - Partition:
                   !If
-                  - IsGovCloud
+                  - GovCloudCondition
                   - aws-us-gov
                   - aws
             - !Sub
-              - arn:${Endpoint}:s3:::${QSS3BucketName}/${QSS3KeyPrefix}/*
-              - Endpoint:
+              - arn:${Partition}:s3:::${QSS3BucketName}/${QSS3KeyPrefix}/*
+              - Partition:
                   !If
-                  - IsGovCloud
+                  - GovCloudCondition
                   - aws-us-gov
                   - aws
           - Sid: DescribeVolumes
