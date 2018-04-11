@@ -198,7 +198,7 @@ Conditions:
   SupportsGlacier:
     !Equals
     - !Ref pSupportsGlacier
-    - true
+    - 'true'
 Resources:
   rS3ELBAccessLogs:
     Type: AWS::S3::Bucket
@@ -1098,6 +1098,8 @@ Resources:
 
             # Inject the security control matrix file location.
             sudo sed -i "s|{compliance-body-matrix}|https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}assets/$COMPLIANCE_MATRIX_FILENAME|g" $LANDING_PAGE
+
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource rAutoScalingGroupApp --region ${AWS::Region}
           - QSS3Region:
               !If
               - GovCloudCondition
