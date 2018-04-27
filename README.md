@@ -1,10 +1,14 @@
-# quickstart-enterprise-accelerator-hipaa
+# quickstart-compliance-hipaa
+## Reference Architecture for HIPAA on the AWS Cloud
 
-The HIPAA Enterprise Accelerator Quick Start deploys a standardized environment that helps organizations with workloads that fall in scope for the Health Insurance Portability and Accountability Act.
+The HIPAA Quick Start deploys a reference architecture that helps organizations with workloads that fall in scope for the Health Insurance Portability and Accountability Act.
 
+The Quick Start will deploy a standard three-tier web architecture using multiple VPCs.
 
-The Quick Start will deploy a standard three-tier web architecture using multiple Amazon VPCs (notional development Amazon VPC shown):
+![Architecture](https://d0.awsstatic.com/partner-network/QuickStart/datasheets/hipaa-on-aws-architecture.png)
 
-![Architecture](https://docs.aws.amazon.com/quickstart/latest/accelerator-nist/images/nist-on-aws-architecture.png)
+For architectural details, best practices, step-by-step instructions, and customization options, see the 
+[deployment guide](https://fwd.aws/vd5pn).
 
-You can find more information on the Standardized Architecture for HIPAA on the AWS Cloud: Quick Start Reference Deployment [docs web page](https://docs.aws.amazon.com/quickstart/latest/accelerator-hipaa/).
+To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo.
+If you'd like to submit code for this Quick Start, please review the [AWS Quick Start Contributor's Kit](https://aws-quickstart.github.io/). 
