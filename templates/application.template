@@ -852,7 +852,7 @@ Resources:
       - Name: AutoScalingGroupName
         Value: !Ref rAutoScalingGroupWeb
       ComparisonOperator: GreaterThanThreshold
-      MetricName: WebServerCpuHighUtilization
+      MetricName: CPUUtilization
   rCWAlarmLowCPUWeb:
     Type: AWS::CloudWatch::Alarm
     DependsOn: rAutoScalingGroupWeb
@@ -869,7 +869,7 @@ Resources:
       - Name: AutoScalingGroupName
         Value: !Ref rAutoScalingGroupWeb
       ComparisonOperator: LessThanThreshold
-      MetricName: WebServerCpuLowUtilization
+      MetricName: CPUUtilization
   rAppInstanceRole:
     Type: AWS::IAM::Role
     Properties:
@@ -1170,7 +1170,7 @@ Resources:
       - Name: AutoScalingGroupName
         Value: !Ref rAutoScalingGroupApp
       ComparisonOperator: GreaterThanThreshold
-      MetricName: AppServerCpuHighUtilization
+      MetricName: CPUUtilization
   rCWAlarmLowCPUApp:
     Type: AWS::CloudWatch::Alarm
     Properties:
@@ -1186,7 +1186,7 @@ Resources:
       - Name: AutoScalingGroupName
         Value: !Ref rAutoScalingGroupApp
       ComparisonOperator: LessThanThreshold
-      MetricName: AppServerCpuLowUtilization
+      MetricName: CPUUtilization
   rPostProcInstanceRole:
     Type: AWS::IAM::Role
     Properties:
