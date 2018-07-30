@@ -1,7 +1,7 @@
 [
     {
         "ParameterKey": "pDBPassword",
-        "ParameterValue": "$[alfred_genpass_28]"
+        "ParameterValue": "$[alfred_genpass_26]"
     },
     {
         "ParameterKey": "pNotifyEmail",
