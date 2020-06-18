@@ -1,0 +1,40 @@
+project:
+  name: quickstart-compliance-hipaa
+  owner: quickstart-eng@amazon.com
+  package_lambda: false
+  regions:
+  - ap-northeast-1
+  - ap-south-1
+  - ap-southeast-1
+  - eu-central-1
+  - eu-west-1
+  - us-east-1
+  - us-east-2
+  - us-west-1
+  - us-west-2
+  s3_bucket: ''
+tests:
+  compl-hipaa:
+    parameters:
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      pAvailabilityZoneA: $[taskcat_getsingleaz_1]
+      pAvailabilityZoneB: $[taskcat_getsingleaz_2]
+      pDBPassword: $[taskcat_genpass_26]
+      pEC2KeyPair: $[taskcat_getkeypair]
+      pEC2KeyPairBastion: $[taskcat_getkeypair]
+      pNotifyEmail: distlist@example.org
+      pSupportsConfig: 'false'
+      pVPCTenancy: default
+    regions:
+    - ap-northeast-1
+    - ap-south-1
+    - ap-southeast-1
+    - eu-central-1
+    - eu-west-1
+    - us-east-1
+    - us-east-2
+    - us-west-1
+    - us-west-2
+    s3_bucket: ''
+    template: templates/main.template.yaml

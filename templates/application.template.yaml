@@ -52,6 +52,7 @@ Metadata:
         default: AWS Quick Start Configuration
       Parameters:
       - QSS3BucketName
+      - QSS3BucketRegion
       - QSS3KeyPrefix
 Parameters:
   pSecurityAlarmTopic:
@@ -149,6 +150,10 @@ Parameters:
       can include numbers, lowercase letters, uppercase letters, and hyphens (-).
       It cannot start or end with a hyphen (-).
     Type: String
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.
+    Type: String
   QSS3KeyPrefix:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
     ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
@@ -191,6 +196,7 @@ Mappings:
     us-west-2:
       ELB: '797873946194'
 Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   GovCloudCondition:
     !Equals
     - !Ref AWS::Region
@@ -400,14 +406,7 @@ Resources:
           Action: s3:*
           Effect: Deny
           Principal: '*'
-          Resource:
-            !Sub
-            - arn:${Partition}:s3:::${rWebContentBucket}
-            - Partition:
-                !If
-                - GovCloudCondition
-                - aws-us-gov
-                - aws
+          Resource: !Sub arn:${AWS::Partition}:s3:::${rWebContentBucket}
           Condition:
             Bool:
               aws:SecureTransport: 'false'
@@ -415,14 +414,7 @@ Resources:
           Effect: Deny
           Principal: '*'
           Action: s3:PutObject
-          Resource:
-            !Sub
-            - arn:${Partition}:s3:::${rWebContentBucket}/*
-            - Partition:
-                !If
-                - GovCloudCondition
-                - aws-us-gov
-                - aws
+          Resource: !Sub arn:${AWS::Partition}:s3:::${rWebContentBucket}/*
           Condition:
             StringNotEquals:
               s3:x-amz-server-side-encryption: AES256
@@ -552,14 +544,7 @@ Resources:
             Effect: Allow
             Action:
             - s3:PutObject
-            Resource:
-              !Sub
-              - arn:${Partition}:s3:::${rS3AssetsBucket}/*
-              - Partition:
-                  !If
-                  - GovCloudCondition
-                  - aws-us-gov
-                  - aws
+            Resource: !Sub arn:${AWS::Partition}:s3:::${rS3AssetsBucket}/*
           - Sid: SelfDestruct
             Effect: Allow
             Action:
@@ -640,20 +625,8 @@ Resources:
             - s3:List*
             - s3:Head*
             Resource:
-            - !Sub
-              - arn:${Partition}:s3:::${rS3AssetsBucket}/*
-              - Partition:
-                  !If
-                  - GovCloudCondition
-                  - aws-us-gov
-                  - aws
-            - !Sub
-              - arn:${Partition}:s3:::${rS3AssetsBucket}
-              - Partition:
-                  !If
-                  - GovCloudCondition
-                  - aws-us-gov
-                  - aws
+            - !Sub arn:${AWS::Partition}:s3:::${rS3AssetsBucket}/*
+            - !Sub arn:${AWS::Partition}:s3:::${rS3AssetsBucket}
           - Sid: DescribeVolumes
             Effect: Allow
             Action:
@@ -892,34 +865,14 @@ Resources:
             - s3:List*
             - s3:Head*
             Resource:
+            - !Sub arn:${AWS::Partition}:s3:::${rS3AssetsBucket}/*
+            - !Sub arn:${AWS::Partition}:s3:::${rS3AssetsBucket}
             - !Sub
-              - arn:${Partition}:s3:::${rS3AssetsBucket}/*
-              - Partition:
-                  !If
-                  - GovCloudCondition
-                  - aws-us-gov
-                  - aws
+              - arn:${AWS::Partition}:s3:::${S3Bucket}
+              - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
             - !Sub
-              - arn:${Partition}:s3:::${rS3AssetsBucket}
-              - Partition:
-                  !If
-                  - GovCloudCondition
-                  - aws-us-gov
-                  - aws
-            - !Sub
-              - arn:${Partition}:s3:::${QSS3BucketName}
-              - Partition:
-                  !If
-                  - GovCloudCondition
-                  - aws-us-gov
-                  - aws
-            - !Sub
-              - arn:${Partition}:s3:::${QSS3BucketName}/${QSS3KeyPrefix}/*
-              - Partition:
-                  !If
-                  - GovCloudCondition
-                  - aws-us-gov
-                  - aws
+              - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
+              - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
           - Sid: DescribeVolumes
             Effect: Allow
             Action:
@@ -1089,10 +1042,10 @@ Resources:
             ######################################################################
 
             # Download the landing page.
-            sudo wget https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}assets/landing/landing.html -O $LANDING_PAGE
+            sudo wget https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}assets/landing/landing.html -O $LANDING_PAGE
 
             # Replace relative image links with links to the production S3 source.
-            sudo sed -i 's|images|https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}assets/landing/images|g' $LANDING_PAGE
+            sudo sed -i 's|images|https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}assets/landing/images|g' $LANDING_PAGE
 
             # Inject the landing page branding label.
             sudo sed -i "s|{compliance-body}|$COMPLIANCE_BODY_LABEL|g" $LANDING_PAGE
@@ -1101,14 +1054,10 @@ Resources:
             sudo sed -i "s|{compliance-body-survey-link}|$COMPLIANCE_SURVEY_LINK|g" $LANDING_PAGE
 
             # Inject the security control matrix file location.
-            sudo sed -i "s|{compliance-body-matrix}|https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}assets/$COMPLIANCE_MATRIX_FILENAME|g" $LANDING_PAGE
+            sudo sed -i "s|{compliance-body-matrix}|https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}assets/$COMPLIANCE_MATRIX_FILENAME|g" $LANDING_PAGE
 
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource rAutoScalingGroupApp --region ${AWS::Region}
-          - QSS3Region:
-              !If
-              - GovCloudCondition
-              - s3-us-gov-west-1
-              - s3
+          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
   rAutoScalingGroupApp:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn: rAutoScalingConfigApp
@@ -1280,7 +1229,7 @@ Outputs:
   rSecurityGroupRDS:
     Value: !Ref rSecurityGroupRDS
   SurveyLink:
-    Description: Please take a moment to complete the survey by clicking this link
+    Descrip0tion: Please take a moment to complete the survey by clicking this link
     Value: https://aws.au1.qualtrics.com/SE/?SID=SV_55sYYdtY1NhTTgN&qs=${COMPLIANCE_SURVEY_LINK}
   Help:
     Description: For assistance or questions regarding this quickstart please email
