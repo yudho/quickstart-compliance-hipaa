@@ -197,10 +197,6 @@ Mappings:
       ELB: '797873946194'
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
-  GovCloudCondition:
-    !Equals
-    - !Ref AWS::Region
-    - us-gov-west-1
   SupportsGlacier:
     !Equals
     - !Ref pSupportsGlacier
@@ -221,14 +217,7 @@ Resources:
         Statement:
         - Sid: ELBAccessLogs20130930
           Effect: Allow
-          Resource:
-            !Sub
-            - arn:${Partition}:s3:::${rS3ELBAccessLogs}/Logs/AWSLogs/${AWS::AccountId}/*
-            - Partition:
-                !If
-                - GovCloudCondition
-                - aws-us-gov
-                - aws
+          Resource: !Sub arn:${AWS::Partition}:s3:::${rS3ELBAccessLogs}/Logs/AWSLogs/${AWS::AccountId}/*
           Principal:
             AWS:
               !FindInMap
@@ -1042,10 +1031,10 @@ Resources:
             ######################################################################
 
             # Download the landing page.
-            sudo wget https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}assets/landing/landing.html -O $LANDING_PAGE
+            sudo wget https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}assets/landing/landing.html -O $LANDING_PAGE
 
             # Replace relative image links with links to the production S3 source.
-            sudo sed -i 's|images|https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}assets/landing/images|g' $LANDING_PAGE
+            sudo sed -i 's|images|https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}assets/landing/images|g' $LANDING_PAGE
 
             # Inject the landing page branding label.
             sudo sed -i "s|{compliance-body}|$COMPLIANCE_BODY_LABEL|g" $LANDING_PAGE
@@ -1054,10 +1043,11 @@ Resources:
             sudo sed -i "s|{compliance-body-survey-link}|$COMPLIANCE_SURVEY_LINK|g" $LANDING_PAGE
 
             # Inject the security control matrix file location.
-            sudo sed -i "s|{compliance-body-matrix}|https://${QSS3BucketName}.${S3Region}.amazonaws.com/${QSS3KeyPrefix}assets/$COMPLIANCE_MATRIX_FILENAME|g" $LANDING_PAGE
+            sudo sed -i "s|{compliance-body-matrix}|https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}assets/$COMPLIANCE_MATRIX_FILENAME|g" $LANDING_PAGE
 
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource rAutoScalingGroupApp --region ${AWS::Region}
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
   rAutoScalingGroupApp:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn: rAutoScalingConfigApp
@@ -1229,7 +1219,7 @@ Outputs:
   rSecurityGroupRDS:
     Value: !Ref rSecurityGroupRDS
   SurveyLink:
-    Descrip0tion: Please take a moment to complete the survey by clicking this link
+    Description: Please take a moment to complete the survey by clicking this link
     Value: https://aws.au1.qualtrics.com/SE/?SID=SV_55sYYdtY1NhTTgN&qs=${COMPLIANCE_SURVEY_LINK}
   Help:
     Description: For assistance or questions regarding this quickstart please email
