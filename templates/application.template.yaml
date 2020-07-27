@@ -421,7 +421,7 @@ Resources:
     - rSecurityGroupRDS
     Properties:
       DBName: !Ref pDBName
-      Engine: MySQL
+      Engine: MariaDB
       MultiAZ: true
       StorageEncrypted: true
       MasterUsername: !Ref pDBUser
@@ -867,6 +867,16 @@ Resources:
             Action:
             - ec2:DescribeVolumes
             Resource: '*'
+      - PolicyName: aws-quick-start-s3-policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Action:
+              - s3:GetObject
+            Resource: !Sub
+              - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
+              - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+            Effect: Allow
   rAppInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -912,12 +922,13 @@ Resources:
                 - /etc/cfn/cfn-hup.conf
                 - /etc/cfn/hooks.d/cfn-auto-reloader.conf
         install_wordpress:
-          packages:
-            yum:
-              php: []
-              php-mysql: []
-              mysql: []
-              httpd: []
+          commands:
+            0_enable_mariadb:
+              command: amazon-linux-extras enable lamp-mariadb10.2-php7.2
+            1_yum_clean:
+              command: yum clean metadata
+            2_php_install:
+             command: yum install -y php-cli php-pdo php-fpm php-json php-mysqlnd mariadb
           sources:
             /var/www/html: https://wordpress.org/latest.tar.gz
           files:
