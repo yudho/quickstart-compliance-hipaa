@@ -192,65 +192,69 @@ Mappings:
       Glacier: 'true'
   AWSAMIRegionMap:
     AMI:
-      AMZNLINUXHVM: amzn-ami-hvm-2018.03.0.20190611-x86_64-gp2
+      AMZN2LINUXHVM: amzn2-ami-hvm-2.0.20200617.0-x86_64-gp2
     ap-northeast-1:
-      AMZNLINUXHVM: ami-02ddf94e5edc8e904
+      AMZN2LINUXHVM: ami-0ee1410f0644c1cac
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     ap-northeast-2:
-      AMZNLINUXHVM: ami-0ecd78c22823e02ef
+      AMZN2LINUXHVM: ami-0a2778941dc6f2820
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     ap-south-1:
-      AMZNLINUXHVM: ami-05695932c5299858a
+      AMZN2LINUXHVM: ami-08706cb5f68222d09
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     ap-southeast-1:
-      AMZNLINUXHVM: ami-043afc2b8b6cfba5c
+      AMZN2LINUXHVM: ami-0d6c336fc1df6d884
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     ap-southeast-2:
-      AMZNLINUXHVM: ami-01393ce9a3ca55d67
+      AMZN2LINUXHVM: ami-020d764f9372da231
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     ca-central-1:
-      AMZNLINUXHVM: ami-0fa94ecf2fef3420b
+      AMZN2LINUXHVM: ami-0cafd75ac4b2bbdde
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     eu-central-1:
-      AMZNLINUXHVM: ami-0ba441bdd9e494102
+      AMZN2LINUXHVM: ami-05ca073a83ad2f28c
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     eu-west-1:
-      AMZNLINUXHVM: ami-0e61341fa75fcaa18
+      AMZN2LINUXHVM: ami-031a03cb800ecb0d5
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     eu-west-2:
-      AMZNLINUXHVM: ami-050b8344d77081f4b
+      AMZN2LINUXHVM: ami-0cf94b1c148cb4b81
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     sa-east-1:
-      AMZNLINUXHVM: ami-05b7dbc290217250d
+      AMZN2LINUXHVM: ami-0c4f7d4b4c66bd8a6
       InstanceType: m4.large
       InstanceTypeDatabase: db.m3.large
     us-east-1:
-      AMZNLINUXHVM: ami-0e2ff28bfb72a4e45
+      AMZN2LINUXHVM: ami-08f3d892de259504d
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     us-east-2:
-      AMZNLINUXHVM: ami-0998bf58313ab53da
+      AMZN2LINUXHVM: ami-0bdcc6c05dec346bf
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     us-gov-west-1:
-      AMZNLINUXHVM: ami-ffa61d9e
+      AMZN2LINUXHVM: ami-9a033cfb
+      InstanceType: m4.large
+      InstanceTypeDatabase: db.m3.large
+    us-gov-east-1:
+      AMZN2LINUXHVM: ami-a2729dd3
       InstanceType: m4.large
       InstanceTypeDatabase: db.m3.large
     us-west-1:
-      AMZNLINUXHVM: ami-021bb9f371690f97a
+      AMZN2LINUXHVM: ami-09a3e40793c7092f5
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
     us-west-2:
-      AMZNLINUXHVM: ami-079f731edfe27c29c
+      AMZN2LINUXHVM: ami-0a243dbef00e96192
       InstanceType: m4.large
       InstanceTypeDatabase: db.m4.large
 Conditions:
@@ -326,7 +330,7 @@ Resources:
           !FindInMap
           - AWSAMIRegionMap
           - !Ref AWS::Region
-          - AMZNLINUXHVM
+          - AMZN2LINUXHVM
         pNatInstanceType:
           !FindInMap
           - AWSAMIRegionMap
@@ -373,7 +377,7 @@ Resources:
           !FindInMap
           - AWSAMIRegionMap
           - !Ref AWS::Region
-          - AMZNLINUXHVM
+          - AMZN2LINUXHVM
         pRegionAZ1Name: !Ref pAvailabilityZoneA
         pRegionAZ2Name: !Ref pAvailabilityZoneB
         pEnvironment:
@@ -395,7 +399,7 @@ Resources:
           !FindInMap
           - AWSAMIRegionMap
           - !Ref AWS::Region
-          - AMZNLINUXHVM
+          - AMZN2LINUXHVM
         pNatInstanceType:
           !FindInMap
           - AWSAMIRegionMap
@@ -487,12 +491,12 @@ Resources:
           !FindInMap
           - AWSAMIRegionMap
           - !Ref AWS::Region
-          - AMZNLINUXHVM
+          - AMZN2LINUXHVM
         pAppAmi:
           !FindInMap
           - AWSAMIRegionMap
           - !Ref AWS::Region
-          - AMZNLINUXHVM
+          - AMZN2LINUXHVM
         pDBUser: testuserdb
         pDBName: testDB
         pDBPassword: !Ref pDBPassword
