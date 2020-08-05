@@ -621,6 +621,16 @@ Resources:
             Action:
             - ec2:DescribeVolumes
             Resource: '*'
+      - PolicyName: aws-quick-start-s3-policy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Action:
+                - s3:GetObject
+              Resource: !Sub
+                - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
+                - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              Effect: Allow
   rWebInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -638,8 +648,8 @@ Resources:
         config:
           packages:
             yum:
-              nginx: []
-              java-1.6.0-openjdk-devel: []
+              #nginx: []
+              #java-1.6.0-openjdk-devel: []
               git: []
           files:
             /etc/nginx/snippets/self-signed.conf:
@@ -674,7 +684,11 @@ Resources:
               owner: root
               group: root
           commands:
-            01-nginx-setup:
+            00-enable_ngnix:
+              command: amazon-linux-extras install nginx1
+            01-enable_ngnix:
+              command: amazon-linux-extras install java-openjdk11
+            02-nginx-setup:
               command: |
                 #!/bin/bash
                 ## Nginx setup
