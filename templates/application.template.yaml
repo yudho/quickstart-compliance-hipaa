@@ -1061,8 +1061,8 @@ Resources:
 
             # Replace relative image links with links to the production S3 source.
             aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}assets/landing/images.zip /var/www/html/
-            sudo unzip /var/www/html/images.zip
-            sudo sed -i 's|images|/var/www/html/images|g' $LANDING_PAGE
+            sudo /usr/bin/unzip /var/www/html/images.zip -d /var/www/html/
+            #sudo sed -i 's|images|/var/www/html/images|g' $LANDING_PAGE
 
             # Inject the landing page branding label.
             sudo sed -i "s|{compliance-body}|$COMPLIANCE_BODY_LABEL|g" $LANDING_PAGE
@@ -1072,7 +1072,7 @@ Resources:
 
             # Inject the security control matrix file location.
             aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}assets/$COMPLIANCE_MATRIX_FILENAME /var/www/html/$COMPLIANCE_MATRIX_FILENAME
-            sudo sed -i "s|{compliance-body-matrix}|/var/www/html/$COMPLIANCE_MATRIX_FILENAME|g" $LANDING_PAGE
+            sudo sed -i "s|{compliance-body-matrix}|$COMPLIANCE_MATRIX_FILENAME|g" $LANDING_PAGE
 
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource rAutoScalingGroupApp --region ${AWS::Region}
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
