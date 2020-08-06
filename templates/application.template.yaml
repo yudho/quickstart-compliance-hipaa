@@ -625,12 +625,12 @@ Resources:
         PolicyDocument:
           Version: '2012-10-17'
           Statement:
-            - Action:
-                - s3:GetObject
-              Resource: !Sub
-                - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
-                - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-              Effect: Allow
+          - Action:
+              - s3:GetObject
+            Resource: !Sub
+              - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
+              - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+            Effect: Allow
   rWebInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -896,7 +896,7 @@ Resources:
     Properties:
       Path: /
       Roles:
-      - !Ref rAppInstanceRole
+        - Ref: 'rAppInstanceRole'
   rAutoScalingConfigApp:
     Type: AWS::AutoScaling::LaunchConfiguration
     DependsOn:
@@ -1050,16 +1050,19 @@ Resources:
             #     NOTE: UPDATE THESE VALUES ACCORDING TO THE COMPLIANCE BODY     #
             ######################################################################
             LANDING_PAGE="/var/www/html/landing.html"
+            IMAGES-FLD="/var/www/html/images"
             COMPLIANCE_BODY_LABEL="HIPAA"
             COMPLIANCE_SURVEY_LINK="hipaa"
             COMPLIANCE_MATRIX_FILENAME="HIPAA-Security-Controls-Mapping.xlsx"
             ######################################################################
 
             # Download the landing page.
-            sudo wget https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}assets/landing/landing.html -O $LANDING_PAGE
+            aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}assets/landing/landing.html $LANDING_PAGE
 
             # Replace relative image links with links to the production S3 source.
-            sudo sed -i 's|images|https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}assets/landing/images|g' $LANDING_PAGE
+            aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}assets/landing/images.zip /var/www/html/
+            sudo unzip /var/www/html/images.zip
+            sudo sed -i 's|images|/var/www/html/images|g' $LANDING_PAGE
 
             # Inject the landing page branding label.
             sudo sed -i "s|{compliance-body}|$COMPLIANCE_BODY_LABEL|g" $LANDING_PAGE
@@ -1068,11 +1071,11 @@ Resources:
             sudo sed -i "s|{compliance-body-survey-link}|$COMPLIANCE_SURVEY_LINK|g" $LANDING_PAGE
 
             # Inject the security control matrix file location.
-            sudo sed -i "s|{compliance-body-matrix}|https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}assets/$COMPLIANCE_MATRIX_FILENAME|g" $LANDING_PAGE
+            aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}assets/$COMPLIANCE_MATRIX_FILENAME /var/www/html/$COMPLIANCE_MATRIX_FILENAME
+            sudo sed -i "s|{compliance-body-matrix}|/var/www/html/$COMPLIANCE_MATRIX_FILENAME|g" $LANDING_PAGE
 
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource rAutoScalingGroupApp --region ${AWS::Region}
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
   rAutoScalingGroupApp:
     Type: AWS::AutoScaling::AutoScalingGroup
     DependsOn: rAutoScalingConfigApp
@@ -1244,8 +1247,8 @@ Outputs:
   rSecurityGroupRDS:
     Value: !Ref rSecurityGroupRDS
   SurveyLink:
+    Value: https://aws.au1.qualtrics.com/SE/?SID=SV_55sYYdtY1NhTTgN&qs=hipaa
     Description: Please take a moment to complete the survey by clicking this link
-    Value: https://aws.au1.qualtrics.com/SE/?SID=SV_55sYYdtY1NhTTgN&qs=${COMPLIANCE_SURVEY_LINK}
   Help:
     Description: For assistance or questions regarding this quickstart please email
       compliance-accelerator@amazon.com
