@@ -1057,10 +1057,10 @@ Resources:
             ######################################################################
 
             # Download the landing page.
-            aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}assets/landing/landing.html $LANDING_PAGE
+            sudo aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}assets/landing/landing.html $LANDING_PAGE
 
             # Replace relative image links with links to the production S3 source.
-            aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}assets/landing/images.zip /var/www/html/
+            sudo aws s3 cp s3://${QSS3BucketName}/${QSS3KeyPrefix}assets/landing/images.zip /var/www/html/
             sudo /usr/bin/unzip /var/www/html/images.zip -d /var/www/html/
             #sudo sed -i 's|images|/var/www/html/images|g' $LANDING_PAGE
 
