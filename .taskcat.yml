@@ -1,40 +1,40 @@
+general:
+  s3_regional_buckets: true
 project:
   name: quickstart-compliance-hipaa
   owner: quickstart-eng@amazon.com
+  shorten_stack_name: true
   package_lambda: false
   regions:
-  - ap-northeast-1
-  - ap-south-1
-  - ap-southeast-1
-  - eu-central-1
-  - eu-west-1
-  - us-east-1
-  - us-east-2
-  - us-west-1
-  - us-west-2
-  s3_bucket: ''
+    - us-east-1
+  parameters:
+    AWSConfigARN: overridden
+    SNSAlarmEmail: overridden
+    DevVPCFlowLogLogGroup: dev-flow-logs-group
+    ProdVPCFlowLogLogGroup: prod-flow-logs-group
+    MgmtVPCFlowLogLogGroup: mgmt-flow-logs-group
+    QSS3BucketName: $[taskcat_autobucket]
+    QSS3BucketRegion: $[taskcat_current_region]
+    QSS3KeyPrefix: quickstart-compliance-hipaa/
 tests:
-  compl-hipaa:
-    parameters:
-      QSS3BucketName: $[taskcat_autobucket]
-      QSS3BucketRegion: $[taskcat_current_region]
-      pAvailabilityZoneA: $[taskcat_getsingleaz_1]
-      pAvailabilityZoneB: $[taskcat_getsingleaz_2]
-      pDBPassword: $[taskcat_genpass_26]
-      pEC2KeyPair: $[taskcat_getkeypair]
-      pEC2KeyPairBastion: $[taskcat_getkeypair]
-      pNotifyEmail: distlist@example.org
-      pSupportsConfig: 'false'
-      pVPCTenancy: default
+  comp-hipaa-regional-test:
     regions:
-    - ap-northeast-1
-    - ap-south-1
-    - ap-southeast-1
-    - eu-central-1
-    - eu-west-1
     - us-east-1
     - us-east-2
     - us-west-1
     - us-west-2
-    s3_bucket: ''
-    template: templates/main.template.yaml
+    - ca-central-1
+    - ap-south-1
+    - ap-northeast-1
+    - ap-northeast-2
+    - ap-southeast-1
+    - ap-southeast-2
+    - eu-central-1
+    - eu-west-1
+    - eu-west-2
+    - eu-west-3
+    # Invalid or unsupported Type AWS::EC2::TransitGatewayRoute for
+    # resource TransitGatewayExternalRoute1 in eu-north-1
+    #- eu-north-1
+    - sa-east-1
+    template: templates/compliance-hipaa-entrypoint.template.yaml
