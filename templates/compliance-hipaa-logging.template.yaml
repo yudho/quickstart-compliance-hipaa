@@ -1,6 +1,5 @@
----
 AWSTemplateFormatVersion: 2010-09-09
-Description: Provisions HIPAA Ready Environment in AWS (qs-1rabh51k3)
+Description: Provisions HIPAA Ready Environment in AWS - Logging (qs-1rabh51k3)
 Metadata:
   LintSpellExclude:
     - CloudWatch

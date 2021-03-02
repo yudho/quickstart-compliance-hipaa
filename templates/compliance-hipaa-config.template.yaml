@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: Provisions HIPAA Ready Environment in AWS (qs-1rabh51gu)
+Description: Provisions HIPAA Ready Environment in AWS - Config (qs-1rabh51gu)
 Metadata:
   Identifier:
     Value: main
@@ -7,7 +7,7 @@ Metadata:
     Description: Input of all required parameters in nested stacks
   Output:
     Description: N/A
-  cfn-lint: { config: { ignore_checks: [ W3011 ] } }
+  cfn-lint: { config: { ignore_checks: [ W3011, W9006 ] } }
   LintSpellExclude:
     - CloudWatch
     - CloudTrail
@@ -25,6 +25,7 @@ Metadata:
         default: AWS quick-start configuration
       Parameters:
       - QSS3BucketName
+      - QSS3BucketRegion
       - QSS3KeyPrefix
     ParameterLabels:
       AWSConfigARN:
@@ -35,6 +36,8 @@ Metadata:
         default: AWS config delivery channel
       QSS3BucketName:
         default: Quick Start S3 bucket name
+      QSS3BucketRegion:
+        default: Quick Start S3 bucket region
       QSS3KeyPrefix:
         default: Quick Start S3 key prefix
 Parameters:
@@ -70,6 +73,10 @@ Parameters:
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
     Type: String
+  QSS3BucketRegion:
+    Default: us-east-1
+    Description: The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.
+    Type: String
 Conditions:
   CreateConfigRecorderYes: !Equals [!Ref CreateConfigRecorder, 'Yes']
   CreateConfigRecorderAutoDetect: !Equals [!Ref CreateConfigRecorder, 'AutoDetect']
@@ -78,6 +85,7 @@ Conditions:
   CreateLambdaRole: !Or
     - !Equals [!Ref CreateConfigRecorder, 'AutoDetect']
     - !Equals [!Ref CreateConfigDeliveryChannel, 'AutoDetect' ]
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 Resources:
   AWSConfigLoggingBucket:
     Type: 'AWS::S3::Bucket'
@@ -143,15 +151,26 @@ Resources:
       Name: !Sub "default-${PsuedoRandom.GroupId}"
   AWSConfigHIPAAConformancePack:
     Type: 'AWS::Config::ConformancePack'
+    Metadata:
+      cfn-lint: { config: { ignore_checks: [ W1001 ] } }
+      DependsOn:
+        - !If [ CreateConfigRecorderYes, !Ref AWSConfigConfigurationRecorder, !Ref "AWS::NoValue" ]
+        - !If [ CreateConfigRecorderAutoDetect, !Ref ConfigurationRecorder, !Ref "AWS::NoValue" ]
+        - !If [ CreateConfigDeliveryChannelYes, !Ref AWSConfigDeliveryChannel, !Ref "AWS::NoValue" ]
+        - !If [ CreateConfigDeliveryChannelAutoDetect, !Ref DeliveryChannel, !Ref "AWS::NoValue" ]
     Properties:
       ConformancePackName: aws-config-hipaa-conformance-pack
-      TemplateS3Uri: !Join 
-        - ''
-        - - 's3://'
-          - !Ref QSS3BucketName
-          - '/'
-          - !Ref QSS3KeyPrefix
-          - 'templates/hipaa/Operational-Best-Practices-for-HIPAA-Security.yaml'
+      TemplateS3Uri: !Sub
+      - 's3://${S3Bucket}/${QSS3KeyPrefix}templates/hipaa/Operational-Best-Practices-for-HIPAA-Security.yaml'
+      - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+#      TemplateS3Uri: !Join
+#        - ''
+#        - - 's3://'
+#          - !Ref QSS3BucketName
+#          - '/'
+#          - !Ref QSS3KeyPrefix
+#          - 'templates/hipaa/Operational-Best-Practices-for-HIPAA-Security.yaml'
   ConfigurationRecorder:
     Type: Custom::CreateConfigRecorder
     Condition: CreateConfigRecorderAutoDetect
@@ -348,4 +367,3 @@ Outputs:
   Help:
     Description: For assistance or questions regarding this quickstart please email compliance-accelerator@amazon.com
     Value: ''
-...
