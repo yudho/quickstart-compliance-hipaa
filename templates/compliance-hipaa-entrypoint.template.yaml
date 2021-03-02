@@ -8,6 +8,7 @@ Metadata:
     - CloudTrail
     - No
     - Config
+  cfn-lint: { config: { ignore_checks: [ W9006 ] } }
   Identifier:
     Value: main
   Input:
@@ -242,9 +243,11 @@ Resources:
         CreateConfigRecorder: !Ref CreateConfigRecorder
         CreateConfigDeliveryChannel: !Ref CreateConfigDeliveryChannel
         QSS3BucketName: !Ref QSS3BucketName
+        QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
   LogStack:
     Type: 'AWS::CloudFormation::Stack'
+    DependsOn: ConfigStack
     Properties:
       TemplateURL: 
         !Sub 
@@ -261,6 +264,7 @@ Resources:
         CloudTrailLogRetentionDays: !Ref CloudTrailLogRetentionDays
   DevStack:
     Type: 'AWS::CloudFormation::Stack'
+    DependsOn: [ ConfigStack, LogStack, MgmtStack ]
     Properties:
       TemplateURL: 
         !Sub 
@@ -276,6 +280,7 @@ Resources:
         DevVPCFlowLogLogGroupRetention: !Ref DevVPCFlowLogLogGroupRetention
   ProdStack:
     Type: 'AWS::CloudFormation::Stack'
+    DependsOn: [ ConfigStack, LogStack, MgmtStack ]
     Properties:
       TemplateURL: 
         !Sub 
@@ -291,6 +296,7 @@ Resources:
         ProdVPCFlowLogLogGroupRetention: !Ref ProdVPCFlowLogLogGroupRetention
   MgmtStack:
     Type: 'AWS::CloudFormation::Stack'
+    DependsOn: [ ConfigStack, LogStack ]
     Properties:
       TemplateURL: 
         !Sub 
