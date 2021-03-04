@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Provisions HIPAA Ready Environment in AWS (qs-1qtukbnsl)
 Metadata:
   QuickStartDocumentation:
-    EntrypointName: "Launch into an existing VPC"
+    EntrypointName: "Launch into a new VPC"
   LintSpellExclude:
     - CloudWatch
     - CloudTrail
@@ -243,7 +243,6 @@ Resources:
         CreateConfigRecorder: !Ref CreateConfigRecorder
         CreateConfigDeliveryChannel: !Ref CreateConfigDeliveryChannel
         QSS3BucketName: !Ref QSS3BucketName
-        QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
   LogStack:
     Type: 'AWS::CloudFormation::Stack'
