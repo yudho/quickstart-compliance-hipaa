@@ -1,5 +1,5 @@
 // Replace the content in <>
-// Briefly describe the software. Use consistent and clear branding. 
+// Briefly describe the software. Use consistent and clear branding.
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-<Describe how the software works on AWS.>
+This Quick Start aims to help automate building a baseline architecture that fits within your organization’s larger HIPAA compliance program.
