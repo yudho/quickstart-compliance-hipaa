@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Provisions HIPAA Ready Environment in AWS (qs-1qtukbnsl)
 Metadata:
   QuickStartDocumentation:
-    EntrypointName: "Launch into a new VPC"
+    EntrypointName: "Parameters for deploying the Reference Architecture for HIPAA"
   LintSpellExclude:
     - CloudWatch
     - CloudTrail

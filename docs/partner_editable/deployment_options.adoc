@@ -2,7 +2,11 @@
 
 This Quick Start provides two deployment options:
 
-* *Deploy {partner-product-short-name} into a new VPC*. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, security groups, and other infrastructure components. It then deploys {partner-product-short-name} into this new VPC.
-* *Deploy {partner-product-short-name} into a new VPC in AWS GovCloud (US) Region*. This option provisions {partner-product-short-name} as in option one but to AWS GovCloud (US) Region.
+* *Deploy {partner-product-short-name} into the AWS GovCloud (US) Region*. This option builds a new AWS environment consisting of a new VPC, subnets, NAT gateways, security groups, and other infrastructure components. It then deploys {partner-product-short-name} into this VPC in the https://aws.amazon.com/govcloud-us/[AWS GovCloud (US)^] Region.
+* *Deploy {partner-product-short-name} into another AWS Region.* This option provisions {partner-product-short-name} as described in the preceding option but in one of the other Regions supported by this Quick Start.
 
 // The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and {partner-product-short-name} settings, as discussed later in this guide.
+
+//TODO Andrew, Should we uncomment any part of the note above? At least the first sentence ... or don't we use separate templates?
+
+//TODO Andrew, Instead of saying "AWS GovCloud (US) Region," should we say "Regions" plural (as noted on this webpage: https://aws.amazon.com/govcloud-us/)? Or are we talking about only the west GovCloud Region? Either way, please revise the GovCloud bullet for accuracy on this.
