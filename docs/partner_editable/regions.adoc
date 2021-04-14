@@ -17,4 +17,4 @@ This Quick Start supports the following Regions:
 * ap-southeast-2, Asia Pacific (Sydney)
 * sa-east-1, South America (São Paulo)
 
-//Full list: https://docs.aws.amazon.com/general/latest/gr/rande.html
+//TODO Andrew, How do you want to include the AWS GovCloud (US) Region/s?
