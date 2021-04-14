@@ -7,6 +7,6 @@ This Quick Start provides two deployment options:
 
 // The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and {partner-product-short-name} settings, as discussed later in this guide.
 
-//TODO Andrew, Should we uncomment any part of the note above? At least the first sentence ... or don't we use separate templates?
+//TODO Andrew, Instead of the commented-out standard note above, would it be accurate to say something like "The Quick Start uses the same AWS CloudFormation template for both options"? (And how might we modify the second sentence to be accurate?)
 
 //TODO Andrew, Instead of saying "AWS GovCloud (US) Region," should we say "Regions" plural (as noted on this webpage: https://aws.amazon.com/govcloud-us/)? Or are we talking about only the west GovCloud Region? Either way, please revise the GovCloud bullet for accuracy on this.
