@@ -5,5 +5,5 @@ Ensure that at least one Amazon IAM service-linked role for AWS Config exists in
 For more information:
 
 * https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-service.html[Creating a role to delegate permissions to an AWS service^]
-* https://docs.aws.amazon.com/config/latest/developerguide/iamrole-permissions.html[Permissions for the IAM Role Assigned to AWS Config^]
+* https://docs.aws.amazon.com/config/latest/developerguide/iamrole-permissions.html[Permissions for the IAM role assigned to AWS Config^]
 
