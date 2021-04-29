@@ -1,12 +1,15 @@
-// Edit this placeholder text to accurately describe your architecture.
+:xrefstyle: short
 
 This Quick Start provides two deployment options:
 
-* *Deploy {partner-product-short-name} into the AWS GovCloud (US) Region*. This option builds a new AWS environment consisting of a new VPC, subnets, NAT gateways, security groups, and other infrastructure components. It then deploys {partner-product-short-name} into this VPC in the https://aws.amazon.com/govcloud-us/[AWS GovCloud (US)^] Region.
-* *Deploy {partner-product-short-name} into another AWS Region.* This option provisions {partner-product-short-name} as described in the preceding option but in one of the other Regions supported by this Quick Start.
+* *Deploy {partner-product-short-name} into a commercial AWS Region.* This option builds a new AWS environment consisting of a new VPC, subnets, NAT gateways, security groups, and other infrastructure components. It then deploys {partner-product-short-name} into this VPC.
+* *Deploy {partner-product-short-name} into the AWS GovCloud Region (US-West)*. This option provisions {partner-product-short-name} as described in the commercial option but in the https://aws.amazon.com/govcloud-us/[AWS GovCloud (US-West)^] Region.
 
-// The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and {partner-product-short-name} settings, as discussed later in this guide.
+The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and {partner-product-short-name} settings, as discussed later in this guide.
 
-//TODO Andrew, Instead of the commented-out standard note above, would it be accurate to say something like "The Quick Start uses the same AWS CloudFormation template for both options"? (And how might we modify the second sentence to be accurate?)
+To see how HIPAA regulatory requirements map to Quick Start architecture decisions, components, and configurations, https://fwd.aws/7M7b9?[download the security controls matrix^] (Microsoft Excel spreadsheet). The excerpt in <<matrix-excerpt>> provides a sample of the available information in that spreadsheet.
 
-//TODO Andrew, Instead of saying "AWS GovCloud (US) Region," should we say "Regions" plural (as noted on this webpage: https://aws.amazon.com/govcloud-us/)? Or are we talking about only the west GovCloud Region? Either way, please revise the GovCloud bullet for accuracy on this.
+[#matrix-excerpt]
+.Security controls matrix (excerpt)
+[link=images/security-controls-matrix-excerpt.png]
+image::../images/security-controls-matrix-excerpt.png[security-controls-matrix-excerpt]
