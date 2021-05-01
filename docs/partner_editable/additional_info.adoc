@@ -17,7 +17,7 @@
 *AWS security:*
 
 * https://docs.aws.amazon.com/whitepapers/latest/building-scalable-secure-multi-vpc-network-infrastructure/centralized-egress-to-internet.html[Centralized egress to internet^]
-* https://aws.amazon.com/blogs/networking-and-content-delivery/creating-a-single-internet-exit-point-from-multiple-vpcs-using-aws-transit-gateway/[Creating a single internet exit point from multiple VPCs Using AWS Transit Gateway^]
+* https://aws.amazon.com/blogs/networking-and-content-delivery/creating-a-single-internet-exit-point-from-multiple-vpcs-using-aws-transit-gateway/[Creating a single internet exit point from multiple VPCs using AWS Transit Gateway^]
 * https://docs.aws.amazon.com/config/latest/developerguide/operational-best-practices-for-hipaa_security.html[Operational Best Practices for HIPAA Security^]
 * https://docs.aws.amazon.com/config/latest/developerguide/conformancepack-sample-templates.html[Conformance Pack Sample Templates^]
 

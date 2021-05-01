@@ -1,7 +1,7 @@
 :quickstart-project-name: quickstart-compliance-hipaa
-:partner-product-name: Reference Architecture for HIPAA
+:partner-product-name: HIPAA Reference Architecture
 // For the following attribute, if you have no short name, enter the same name as partner-product-name.
-:partner-product-short-name: Reference Architecture for HIPAA
+:partner-product-short-name: HIPAA Reference Architecture
 // If there's no partner, comment partner-company-name and partner-contributors.
 //:partner-company-name: Example Company Name, Ltd.
 :doc-month: May
