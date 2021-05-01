@@ -1,6 +1,6 @@
-## Reference Architecture for HIPAA on the AWS Cloud—Quick Start
+## HIPAA Reference Architecture on the AWS Cloud—Quick Start
 
-For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://aws-quickstart.github.io/quickstart-compliance-hipaa/).
+For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://fwd.aws/vd5pn?).
 
 To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo. 
 

@@ -2,10 +2,10 @@
 
 This Quick Start provides two deployment options:
 
-* *Deploy {partner-product-short-name} into a commercial AWS Region.* This option builds a new AWS environment consisting of a new VPC, subnets, NAT gateways, security groups, and other infrastructure components. It then deploys {partner-product-short-name} into this VPC.
-* *Deploy {partner-product-short-name} into the AWS GovCloud Region (US-West)*. This option provisions {partner-product-short-name} as described in the commercial option but in the https://aws.amazon.com/govcloud-us/[AWS GovCloud (US-West)^] Region.
+* *Deploy {partner-product-short-name} into an AWS Region other than AWS GovCloud (US).* This option builds a new AWS environment consisting of a new VPC, subnets, NAT gateways, security groups, and other infrastructure components. It then deploys {partner-product-short-name} into this VPC.
+* *Deploy {partner-product-short-name} into AWS GovCloud (US)*. This option provisions this architecture in the https://aws.amazon.com/govcloud-us/[AWS GovCloud (US-West) Region^].
 
-The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and {partner-product-short-name} settings, as discussed later in this guide.
+The Quick Start provides one template for both of these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and {partner-product-short-name} settings, as discussed later in this guide.
 
 To see how HIPAA regulatory requirements map to Quick Start architecture decisions, components, and configurations, https://fwd.aws/7M7b9?[download the security controls matrix^] (Microsoft Excel spreadsheet). The excerpt in <<matrix-excerpt>> provides a sample of the available information in that spreadsheet.
 
