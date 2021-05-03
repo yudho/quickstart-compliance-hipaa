@@ -18,6 +18,7 @@
 :deployment_time: 15 minutes
 :default_deployment_region: us-east-1
 :parameters_as_appendix:
+:compliance-statement: Deploying this Quick Start does not guarantee an organization’s compliance with any laws, certifications, policies, or other regulations.
 // Uncomment the following two attributes if you are using an AWS Marketplace listing.
 // Additional content will be generated automatically based on these attributes.
 // :marketplace_subscription:

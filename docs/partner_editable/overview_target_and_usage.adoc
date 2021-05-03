@@ -6,6 +6,8 @@ This guide provides instructions for deploying the {partner-product-short-name} 
 
 This Quick Start is for people in the healthcare industry who are looking for guidance on implementing HIPAA-ready environments in the AWS Cloud.
 
+NOTE: {compliance-statement}
+
 .IMPORTANT—PLEASE READ
 ****
 *You must have an AWS Business Associate Addendum (BAA) in place, and follow its configuration requirements, before running protected health information (PHI) workloads on AWS.* You should not use your AWS account in connection with PHI until you have accepted the AWS BAA and configured your AWS account(s) as required by the AWS BAA. Under HIPAA regulations, covered entities and business associates are responsible for putting in place a business associate agreement between themselves and each of their business associates. You are solely responsible for determining whether you and your organization need a business associate agreement with AWS. *If you determine that you need a business associate agreement with AWS, you can https://aws.amazon.com/artifact/getting-started/#BAA_Agreements[accept the AWS BAA through a self-service portal in AWS Artifact^]*. It is your responsibility to obtain a BAA from AWS. For more information about the AWS BAA, visit the https://aws.amazon.com/compliance/hipaa-compliance/[AWS HIPAA Compliance webpage^].
