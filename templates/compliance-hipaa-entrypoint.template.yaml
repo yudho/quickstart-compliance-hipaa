@@ -84,8 +84,7 @@ Metadata:
       DevVPCSubnet2:
         default: Development VPC subnet 2 CIDR block
       DevVPCFlowLogLogGroupRetention:
-        default: Development VPC flow-log retention days
-        # TODO: Andrew, I'm not sure how to unpack VPCFlowLogLogGroup. Let's discuss.
+        default: Development VPC flow-log log-group retention
       ProdVPCCIDRBlock:
         default: Production VPC CIDR block
       ProdVPCSubnet1:
@@ -93,8 +92,7 @@ Metadata:
       ProdVPCSubnet2:
         default: Production subnet 2 CIDR block
       ProdVPCFlowLogLogGroupRetention:
-        default: Production VPC flow-log retention days
-        # TODO: Same as earlier comment.
+        default: Production VPC flow-log log-group retention
       MgmtVPCCIDRBlock:
         default: Management VPC CIDR block
       MgmtVPCPublicSubnet1:
@@ -106,8 +104,7 @@ Metadata:
       MgmtVPCPrivateSubnet2:
         default: Management private subnet 2 CIDR block
       MgmtVPCFlowLogLogGroupRetention:
-        default: Management VPC flow-log retention days
-        # TODO: Same as earlier comment.
+        default: Management VPC flow-log log-group retention
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3BucketRegion:
@@ -154,8 +151,7 @@ Parameters:
   DevVPCFlowLogLogGroupRetention:
     Type: Number
     Default: 90
-    Description: Number of days that flow logs are retained in the development VPC.
-    # TODO: Same as earlier comment.
+    Description: Number of days that the flow-log log group is retained for the development VPC.
   ProdVPCCIDRBlock:
     Type: String
     Default: 172.17.0.0/16
@@ -171,8 +167,7 @@ Parameters:
   ProdVPCFlowLogLogGroupRetention:
     Type: Number
     Default: 90
-    Description: Number of days that the flow logs are retained in the production VPC.
-    # TODO: Same as earlier comment.
+    Description: Number of days that the flow-log log group is retained for the production VPC.
   MgmtVPCCIDRBlock:
     Type: String
     Default: 172.16.0.0/16
@@ -196,8 +191,7 @@ Parameters:
   MgmtVPCFlowLogLogGroupRetention:
     Type: Number
     Default: 90
-    Description: Number of days that the flow logs are retained in the management VPC.
-    # TODO: Same as earlier comment.
+    Description: Number of days that the flow-log log group is retained for the management VPC.
   CreateConfigRecorder:
     Type: String
     Default: 'Yes'
