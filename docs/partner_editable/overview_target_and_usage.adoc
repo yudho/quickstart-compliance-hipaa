@@ -6,7 +6,7 @@ This guide provides instructions for deploying the U.S. Health Insurance Portabi
 
 This Quick Start is for people in the healthcare industry who are looking for guidance on implementing HIPAA-ready environments in the AWS Cloud.
 
-This Quick Start is part of a set of AWS compliance offerings, which provide security-focused architectures to help managed service providers (MSPs), cloud-provisioning teams, developers, integrators, and information-security teams follow strict security, compliance, and risk-management controls. For other Quick Starts in this category, see the https://aws.amazon.com/quickstart/?solutions-all.sort-by=item.additionalFields.sortDate&solutions-all.sort-order=desc&awsf.filter-tech-category=tech-category%23security-identity-compliance&awsf.filter-industry=*all&awsf.filter-source-category=*all&awsf.filter-content-type=*all[Quick Start catalog^].
+This Quick Start is part of a set of AWS compliance offerings, which provide security-focused architectures to help managed service providers, cloud-provisioning teams, developers, integrators, and information-security teams follow strict security, compliance, and risk-management controls. For other Quick Starts in this category, see the https://aws.amazon.com/quickstart/?solutions-all.sort-by=item.additionalFields.sortDate&solutions-all.sort-order=desc&awsf.filter-tech-category=tech-category%23security-identity-compliance&awsf.filter-industry=*all&awsf.filter-source-category=*all&awsf.filter-content-type=*all[Quick Start catalog^].
 
 NOTE: {compliance-statement}
 
