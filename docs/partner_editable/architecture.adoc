@@ -23,7 +23,7 @@ As shown in <<architecture1>>, the Quick Start sets up the following:
 * AWS Transit Gateway for VPC-to-VPC communication and customer connectivity.
 * For logging and audit controls:
 ** Amazon CloudWatch for metric monitoring and threshold alarms. This service delivers flow logs to an S3 bucket.
-** AWS Config with the conformance pack for HIPAA, maps HIPAA controls to AWS configuration items. This service delivers flow logs to an S3 bucket.
+** AWS Config with the conformance pack for HIPAA, maps HIPAA requirements to AWS configuration items. This service delivers flow logs to an S3 bucket.
 ** AWS CloudTrail for AWS access logging. This service delivers flow logs to an S3 bucket.
 * For customer connectivity:
 ** AWS Site-to-Site VPN or AWS Direct Connect to connect with AWS Transit Gateway.
