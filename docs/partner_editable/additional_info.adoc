@@ -42,4 +42,3 @@
 * https://aws.amazon.com/compliance/hipaa-compliance/[HIPAA Compliance^] (AWS website)
 * https://aws.amazon.com/artifact/getting-started/#BAA_Agreements[Getting Started with AWS Artifact^]
 * https://d0.awsstatic.com/whitepapers/compliance/AWS_HIPAA_Compliance_Whitepaper.pdf[Architecting for HIPAA Security and Compliance on Amazon Web Services^]
-* https://www.hhs.gov/hipaa/for-professionals/index.html[HIPAA for Professionals^] (U.S. Department of Health & Human Services website, hhs.gov)
