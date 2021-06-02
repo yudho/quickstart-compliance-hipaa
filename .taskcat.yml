@@ -1,6 +1,4 @@
 project:
-  govcloud: true
-  marketplace-ami: false
   name: quickstart-compliance-hipaa
   owner: quickstart-eng@amazon.com
   shorten_stack_name: true
