@@ -1,4 +1,5 @@
-This Quick Start supports the following AWS Regions, including an https://aws.amazon.com/govcloud-us/[AWS GovCloud (US)^] Region: 
+This Quick Start supports the following AWS Regions.
+//, including an https://aws.amazon.com/govcloud-us/[AWS GovCloud (US)^] Region: 
 
 * us-east-1, US East (N. Virginia)
 * us-east-2, US East (Ohio)
@@ -16,4 +17,4 @@ This Quick Start supports the following AWS Regions, including an https://aws.am
 * ap-southeast-1, Asia Pacific (Singapore)
 * ap-southeast-2, Asia Pacific (Sydney)
 * sa-east-1, South America (São Paulo)
-* AWS GovCloud (US-West)
+//* AWS GovCloud (US-West)
