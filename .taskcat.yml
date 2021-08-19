@@ -38,7 +38,7 @@ tests:
     #- eu-north-1
     - sa-east-1
     template: templates/compliance-hipaa-entrypoint.template.yaml
-  gov-cloud-test:
-    template: templates/compliance-hipaa-entrypoint.template.yaml
-    regions:
-    - us-gov-west-1
+#  gov-cloud-test:
+#    template: templates/compliance-hipaa-entrypoint.template.yaml
+#    regions:
+#    - us-gov-west-1
