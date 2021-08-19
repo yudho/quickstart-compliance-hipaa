@@ -160,7 +160,9 @@ Resources:
       Region: !Ref "AWS::Region"
       ConfigRole: !Ref "AWSConfigARN"
   DeliveryChannel:
-    DependsOn: ConfigurationRecorder
+    Metadata:
+      cfn-lint: { config: { ignore_checks: [ W1001 ] } }
+      DependsOn: !Ref ConfigurationRecorder
     Condition: CreateConfigDeliveryChannelAutoDetect
     Type: Custom::CreateConfigDeliveryChannel
     Properties:
@@ -310,6 +312,8 @@ Resources:
       Runtime: python3.7
       Timeout: 10
   LambdaExecutionRole:
+    Metadata:
+      cfn-lint: { config: { ignore_checks: [ EIAMPolicyWildcardResource, EIAMPolicyActionWildcard ], ignore_reasons: [ EIAMPolicyWildcardResource: "Requires full access to function", EIAMPolicyActionWildcard: "Required for proper function" ] } }
     Type: AWS::IAM::Role
     Condition: CreateLambdaRole
     Properties:
