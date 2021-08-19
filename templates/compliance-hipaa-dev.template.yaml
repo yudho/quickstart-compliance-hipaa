@@ -47,8 +47,8 @@ Resources:
     Properties:
       RetentionInDays: !Ref DevVPCFlowLogLogGroupRetention
   DevelopmentFlowLogsRole:
-    Metadata:
-      cfn-lint: { config: { ignore_checks: [ EIAMPolicyWildcardResource, EIAMPolicyActionWildcard ], ignore_reasons: [ EIAMPolicyWildcardResource: "Requires full access to function", EIAMPolicyActionWildcard: "Required for proper function" ] } }
+#    Metadata:
+#      cfn-lint: { config: { ignore_checks: [ EIAMPolicyWildcardResource, EIAMPolicyActionWildcard ], ignore_reasons: [ EIAMPolicyWildcardResource: "Requires full access to function", EIAMPolicyActionWildcard: "Required for proper function" ] } }
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -72,7 +72,7 @@ Resources:
                   - 'logs:PutLogEvents'
                   - 'logs:DescribeLogGroups'
                   - 'logs:DescribeLogStreams'
-                Resource: '*'
+                Resource: !Sub '${DevelopmentVPCFlowLogGroup.Arn}'
           PolicyName: Development-Flow-Logs-Role
       Tags:
         - Key: Name

@@ -149,7 +149,7 @@ Resources:
     Properties:
       ConformancePackName: aws-config-hipaa-conformance-pack
       TemplateS3Uri: !Sub
-      - 's3://${S3Bucket}/${QSS3KeyPrefix}templates/hipaa/Operational-Best-Practices-for-HIPAA-Security.yaml'
+      - 's3://${S3Bucket}/${QSS3KeyPrefix}submodules/aws-config-rules/aws-config-conformance-packs/Operational-Best-Practices-for-HIPAA-Security.yaml'
       - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
   ConfigurationRecorder:
