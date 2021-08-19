@@ -125,23 +125,18 @@ Resources:
             Condition:
               StringEquals:
                 's3:x-amz-acl': bucket-owner-full-control
-  # Used to create a short dynamic name
-  PsuedoRandom:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: DoNotUse
-  AWSConfigDeliveryChannel:
+  y23AWSConfigDeliveryChannel:
     Type: 'AWS::Config::DeliveryChannel'
     Condition: CreateConfigDeliveryChannelYes
     Properties:
       S3BucketName: !Ref AWSConfigLoggingBucket
-      Name: !Sub "default-${PsuedoRandom.GroupId}"
+      Name: !Sub "default-${AWS::Region}-${AWS::StackName}"
   AWSConfigConfigurationRecorder:
     Type: 'AWS::Config::ConfigurationRecorder'
     Condition: CreateConfigRecorderYes
     Properties:
       RoleARN: !Ref AWSConfigARN
-      Name: !Sub "default-${PsuedoRandom.GroupId}"
+      Name: !Sub "default-${AWS::Region}-${AWS::StackName}"
   AWSConfigHIPAAConformancePack:
     Type: 'AWS::Config::ConformancePack'
     Metadata:
@@ -157,13 +152,6 @@ Resources:
       - 's3://${S3Bucket}/${QSS3KeyPrefix}templates/hipaa/Operational-Best-Practices-for-HIPAA-Security.yaml'
       - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
-#      TemplateS3Uri: !Join
-#        - ''
-#        - - 's3://'
-#          - !Ref QSS3BucketName
-#          - '/'
-#          - !Ref QSS3KeyPrefix
-#          - 'templates/hipaa/Operational-Best-Practices-for-HIPAA-Security.yaml'
   ConfigurationRecorder:
     Type: Custom::CreateConfigRecorder
     Condition: CreateConfigRecorderAutoDetect
