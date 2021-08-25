@@ -47,6 +47,8 @@ Resources:
     Properties:
       RetentionInDays: !Ref ProdVPCFlowLogLogGroupRetention
   ProductionFlowLogsRole:
+    Metadata:
+      cfn-lint: { config: { ignore_checks: [ EIAMPolicyWildcardResource, EIAMPolicyActionWildcard ], ignore_reasons: [ EIAMPolicyWildcardResource: "Requires full access to function", EIAMPolicyActionWildcard: "Required for proper function" ] } }
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -161,4 +163,3 @@ Outputs:
   Help:
     Description: For assistance or questions regarding this quickstart please email compliance-accelerator@amazon.com
     Value: ''
-...
