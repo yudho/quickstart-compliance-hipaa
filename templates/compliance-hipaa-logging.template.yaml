@@ -49,87 +49,11 @@ Parameters:
     Type: Number
     Description: CloudTrail log group retention days.
 Resources:
-  AWSLoggingBucket:
-    Metadata:
-      cfn-lint: { config: { ignore_checks: [ W3011 ] } }
-    Type: 'AWS::S3::Bucket'
-    DeletionPolicy: Retain
-    Properties:
-      AccessControl: LogDeliveryWrite
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
-      LifecycleConfiguration:
-        Rules:
-          - ExpirationInDays: !Ref LifecycleExpirationDays
-            Id: Transition90daysRetain7yrs
-            Status: Enabled
-            Transitions:
-              - StorageClass: STANDARD_IA
-                TransitionInDays: !Ref >-
-                  LifecycleTransitionStandardIADays
-              - StorageClass: GLACIER
-                TransitionInDays: !Ref LifecycleTransitionGlacierDays
-      Tags:
-        - Key: Name
-          Value: AWS Logging Bucket
-        - Key: Purpose
-          Value: Security
-      VersioningConfiguration:
-        Status: Enabled
-  AWSLoggingBucketPolicy:
-    Type: 'AWS::S3::BucketPolicy'
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
-    Properties:
-      Bucket: !Ref AWSLoggingBucket
-      PolicyDocument:
-        Version: 2012-10-17
-        Id: AWSLoggingAccessToBucket
-        Statement:
-          - Sid: DenyUnEncryptedObjectUploads
-            Effect: Deny
-            Principal: '*'
-            Action: 's3:*'
-            Resource: !Join 
-              - ''
-              - - !GetAtt 
-                  - AWSLoggingBucket
-                  - Arn
-                - /*
-            Condition:
-              Bool:
-                'aws:SecureTransport': 'false'
-          - Sid: Restrict Delete* Actions
-            Effect: Deny
-            Principal: '*'
-            Action: 's3:Delete*'
-            Resource: !Join 
-              - ''
-              - - !GetAtt 
-                  - AWSLoggingBucket
-                  - Arn
-                - /*
-          - Sid: DenyUnEncryptedObjectUploads
-            Effect: Deny
-            Principal: '*'
-            Action: 's3:PutObject'
-            Resource: !Join 
-              - ''
-              - - !GetAtt 
-                  - AWSLoggingBucket
-                  - Arn
-                - /*
-            Condition:
-              StringNotEquals:
-                's3:x-amz-server-side-encryption': AES256
   AWSCloudTrailBucket:
     Type: 'AWS::S3::Bucket'
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
-      AccessControl: LogDeliveryWrite
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
@@ -237,39 +161,6 @@ Resources:
       RetentionInDays: !Ref CloudTrailLogRetentionDays
     DependsOn:
       - SNSSecurityAlarmTopic
-  CloudTrailRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: AllowFlowLogs
-            Effect: Allow
-            Principal:
-              Service: ec2.amazonaws.com
-            Action: 'sts:AssumeRole'
-      Description: CloudTrail Role
-      Path: /
-      Policies:
-        - PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action: 's3:ListBucket'
-                Resource: !GetAtt 
-                  - AWSLoggingBucket
-                  - Arn
-              - Effect: Allow
-                Action:
-                  - 's3:PutObject'
-                  - 's3:GetObject'
-                Resource: !Join 
-                  - ''
-                  - - !GetAtt 
-                      - AWSLoggingBucket
-                      - Arn
-                    - /*
-          PolicyName: cloudtrail-limited-actions
   CloudWatchRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -300,12 +191,6 @@ Resources:
                   - CloudTrailLogGroup
                   - Arn
           PolicyName: cloudwatch-limited-actions
-  CloudTrailInstanceProfile:
-    Type: 'AWS::IAM::InstanceProfile'
-    Properties:
-      Roles:
-        - !Ref CloudTrailRole
-      Path: /
   CloudTrailTrail:
     Type: 'AWS::CloudTrail::Trail'
     Properties:
