@@ -17,34 +17,16 @@ Metadata:
         default: Logging configuration
       Parameters:
       - SNSAlarmEmail
-      - LifecycleExpirationDays
-      - LifecycleTransitionStandardIADays
-      - LifecycleTransitionGlacierDays
       - CloudTrailLogRetentionDays
     ParameterLabels:
       SNSAlarmEmail:
         default: CloudWatch alarm notification email address
-      LifecycleExpirationDays:
-        default: S3 lifecycle expiration days
-      LifecycleTransitionStandardIADays:
-        default: S3 lifecycle transition to standard-IA days
-      LifecycleTransitionGlacierDays:
-        default: S3 lifecycle transition to glacier days
       CloudTrailLogRetentionDays:
         default: CloudTrail retention days
 Parameters:
   SNSAlarmEmail:
     Type: String
     Description: SNS security alarm email.
-  LifecycleExpirationDays:
-    Type: Number
-    Description: Lifecycle expiration days.
-  LifecycleTransitionStandardIADays:
-    Type: Number
-    Description: Lifecycle transition standard-IA days.
-  LifecycleTransitionGlacierDays:
-    Type: Number
-    Description: Lifecycle transition glacier days.
   CloudTrailLogRetentionDays:
     Type: Number
     Description: CloudTrail log group retention days.
