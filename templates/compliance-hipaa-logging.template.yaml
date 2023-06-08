@@ -55,7 +55,6 @@ Resources:
     Type: 'AWS::S3::Bucket'
     DeletionPolicy: Retain
     Properties:
-      AccessControl: LogDeliveryWrite
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
@@ -111,31 +110,36 @@ Resources:
                   - AWSLoggingBucket
                   - Arn
                 - /*
-          - Sid: DenyUnEncryptedObjectUploads
-            Effect: Deny
-            Principal: '*'
-            Action: 's3:PutObject'
+          - Sid: AllowServerAccessLogging
+            Action:
+              - 's3:PutObject'
+            Effect: Allow
+            Principal:
+              Service: logging.s3.amazonaws.com
             Resource: !Join 
               - ''
-              - - !GetAtt 
-                  - AWSLoggingBucket
-                  - Arn
+              - - 'arn:aws:s3:::'
+                - !Ref AWSLoggingBucket
                 - /*
             Condition:
-              StringNotEquals:
-                's3:x-amz-server-side-encryption': AES256
+              ArnLike:
+                'aws:SourceArn': !GetAtt 
+                  - AWSCloudTrailBucket
+                  - Arn
+              StringEquals:
+                'aws:SourceAccount': !Sub '${AWS::AccountId}'
   AWSCloudTrailBucket:
     Type: 'AWS::S3::Bucket'
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
-      AccessControl: LogDeliveryWrite
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
       LoggingConfiguration:
         LogFilePrefix: cloudtraillogs-
+        DestinationBucketName: !Ref AWSLoggingBucket
       Tags:
         - Key: Name
           Value: AWS CloudTrail Bucket
