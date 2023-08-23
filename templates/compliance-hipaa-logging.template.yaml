@@ -17,34 +17,16 @@ Metadata:
         default: Logging configuration
       Parameters:
       - SNSAlarmEmail
-      - LifecycleExpirationDays
-      - LifecycleTransitionStandardIADays
-      - LifecycleTransitionGlacierDays
       - CloudTrailLogRetentionDays
     ParameterLabels:
       SNSAlarmEmail:
         default: CloudWatch alarm notification email address
-      LifecycleExpirationDays:
-        default: S3 lifecycle expiration days
-      LifecycleTransitionStandardIADays:
-        default: S3 lifecycle transition to standard-IA days
-      LifecycleTransitionGlacierDays:
-        default: S3 lifecycle transition to glacier days
       CloudTrailLogRetentionDays:
         default: CloudTrail retention days
 Parameters:
   SNSAlarmEmail:
     Type: String
     Description: SNS security alarm email.
-  LifecycleExpirationDays:
-    Type: Number
-    Description: Lifecycle expiration days.
-  LifecycleTransitionStandardIADays:
-    Type: Number
-    Description: Lifecycle transition standard-IA days.
-  LifecycleTransitionGlacierDays:
-    Type: Number
-    Description: Lifecycle transition glacier days.
   CloudTrailLogRetentionDays:
     Type: Number
     Description: CloudTrail log group retention days.
@@ -241,39 +223,6 @@ Resources:
       RetentionInDays: !Ref CloudTrailLogRetentionDays
     DependsOn:
       - SNSSecurityAlarmTopic
-  CloudTrailRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: AllowFlowLogs
-            Effect: Allow
-            Principal:
-              Service: ec2.amazonaws.com
-            Action: 'sts:AssumeRole'
-      Description: CloudTrail Role
-      Path: /
-      Policies:
-        - PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action: 's3:ListBucket'
-                Resource: !GetAtt 
-                  - AWSLoggingBucket
-                  - Arn
-              - Effect: Allow
-                Action:
-                  - 's3:PutObject'
-                  - 's3:GetObject'
-                Resource: !Join 
-                  - ''
-                  - - !GetAtt 
-                      - AWSLoggingBucket
-                      - Arn
-                    - /*
-          PolicyName: cloudtrail-limited-actions
   CloudWatchRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -304,12 +253,6 @@ Resources:
                   - CloudTrailLogGroup
                   - Arn
           PolicyName: cloudwatch-limited-actions
-  CloudTrailInstanceProfile:
-    Type: 'AWS::IAM::InstanceProfile'
-    Properties:
-      Roles:
-        - !Ref CloudTrailRole
-      Path: /
   CloudTrailTrail:
     Type: 'AWS::CloudTrail::Trail'
     Properties:

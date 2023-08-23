@@ -27,9 +27,6 @@ Metadata:
         default: AWS logging configuration
       Parameters:
       - SNSAlarmEmail
-      - LifecycleExpirationDays
-      - LifecycleTransitionStandardIADays
-      - LifecycleTransitionGlacierDays
       - CloudTrailLogRetentionDays
     - Label:
         default: Development VPC configuration
@@ -69,12 +66,6 @@ Metadata:
         default: AWS Config delivery channel
       SNSAlarmEmail:
         default: SNS alarm-notification email address
-      LifecycleExpirationDays:
-        default: S3 Lifecycle expiration days
-      LifecycleTransitionStandardIADays:
-        default: S3 Lifecycle transition-to-standard-IA days
-      LifecycleTransitionGlacierDays:
-        default: S3 Lifecycle transition-to-S3-Glacier days
       CloudTrailLogRetentionDays:
         default: CloudTrail log-retention days
       DevVPCCIDRBlock:
@@ -116,18 +107,6 @@ Parameters:
     Type: String
     Default: ''
     Description: Amazon Resource Name for the AWS Config service-linked role.
-  LifecycleExpirationDays:
-    Type: Number
-    Default: 2555
-    Description: Number of days after objects are created that Amazon S3 automatically deletes them.
-  LifecycleTransitionStandardIADays:
-    Type: Number
-    Default: 90
-    Description: Number of days after objects are created that Amazon S3 automatically transitions them to the S3 Standard-IA storage class.
-  LifecycleTransitionGlacierDays:
-    Type: Number
-    Default: 180
-    Description: Number of days after objects are created that Amazon S3 automatically transitions them to the S3 Glacier storage class.
   SNSAlarmEmail:
     Type: String
     Default: ''
@@ -269,9 +248,6 @@ Resources:
       TimeoutInMinutes: 60
       Parameters:
         SNSAlarmEmail: !Ref SNSAlarmEmail
-        LifecycleExpirationDays: !Ref LifecycleExpirationDays
-        LifecycleTransitionStandardIADays: !Ref LifecycleTransitionStandardIADays
-        LifecycleTransitionGlacierDays: !Ref LifecycleTransitionGlacierDays
         CloudTrailLogRetentionDays: !Ref CloudTrailLogRetentionDays
   DevStack:
     Type: 'AWS::CloudFormation::Stack'
@@ -404,3 +380,4 @@ Outputs:
   Help:
     Description: For assistance or questions regarding this quickstart please email compliance-accelerator@amazon.com
     Value: ''
+ 
